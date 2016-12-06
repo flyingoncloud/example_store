@@ -16,7 +16,7 @@
     <div id="columns">
       <div id="side">
         <ul>
-          <li><a href="#">Home</a></li>
+          <li> <%= link_to "Home", store_path %> </li>
           <li><a href="#">Questions</a></li>
           <li><a href="#">News</a></li>
           <li><a href="#">Contact</a></li>
@@ -26,6 +26,6 @@
     <%= yield %>      
      </div> 
     </div>
-    <footer><%= Time.now.month %>.0<%= Time.now.day %>.<%= Time.now.year %> </footer>
+    <footer> <%= @count %> </footer>
   </body>
 </html>
