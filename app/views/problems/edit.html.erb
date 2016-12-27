@@ -1,6 +1,273 @@
 <h1>Editing problem</h1>
 
-<%= render 'form', problem: @problem %>
+<!-- <%= render 'form', problem: @problem %> -->
+
+<div class="ad_footerbanner" id="ad_footerbanner3">
+<style type="text/css">
+#inputWrap{float:left;width:38%}
+#inputText{background:#ffffef;width:100%}
+#outputWrap{float:right;width:61%}
+#output{background:#ffffef;text-align:left;padding:6px;border:solid 1px #ccc;-moz-border-radius:5px;border-radius:5px}
+.anniu{font-family:"Tahoma"}
+</style>
+
+<div id="inputWrap">
+<!-- <textarea id="inputText" rows="15">
+
+</textarea> -->
+
+<%= form_for @problem, url: {action: "update"} do |f| %>
+
+   <%= f.text_area :problem_text, id: "inputText", rows: 10, style: "width:100%" %>
+   <%= f.submit "Update" %>
+<% end %>
+
+<div>
+  <input type="button" id="ztyl" value="暂停预览" onclick="ylqh()" />
+  <input type="button" value="清空" onclick="clearinputText()" />
+</div>
+<br />
+<button type="button" class="anniu" onclick="chaback('$  $',2)" >行内公式
+</button><button type="button" class="anniu" onclick="chaback('\\[  \\]',3)" >行间公式
+</button><button type="button" class="anniu" onclick="chaback('\\begin{align*}\n\n\\end{align*}',13)" >align*环境
+</button><button type="button" class="anniu" onclick="chaback('\\begin{gather*}\n\n\\end{gather*}',14)" >gather*环境
+</button><button type="button" class="anniu" onclick="chaback('\\begin{cases}\n\n\\end{cases}',12)" >cases环境
+</button><button type="button" class="anniu" onclick="chaback('\\frac{}{}',3)" >分式
+</button><button type="button" class="anniu" onclick="chaback('\\dfrac{}{}',3)" >d分式
+</button><button type="button" class="anniu" onclick="chaback('\\sqrt{}',1)" >根号
+</button><button type="button" class="anniu" onclick="chaback('\\sqrt[]{}',3)" >n次方根
+</button><!--<button type="button" class="anniu" onclick="cha('\\sum ')" >∑
+</button><button type="button" class="anniu" onclick="cha('\\prod ')" >∏
+</button><button type="button" class="anniu" onclick="chaback('\\left(  \\right)',8)" >( )
+</button><button type="button" class="anniu" onclick="chaback('\\left[  \\right]',8)" >[ ]
+</button><button type="button" class="anniu" onclick="chaback('\\left\\{  \\right\\}',9)" >{ }
+</button><button type="button" class="anniu" onclick="chaback('\\left|  \\right|',8)" >| |
+</button><button type="button" class="anniu" onclick="cha('\\iff ')" >&lt;==&gt;
+</button><button type="button" class="anniu" onclick="cha('\\riff ')" >==&gt;
+</button><button type="button" class="anniu" onclick="cha('\\liff ')" >&lt;==
+</button>--><button type="button" class="anniu" onclick="cha('\\geqslant ')" >≥
+</button><button type="button" class="anniu" onclick="cha('\\leqslant ')" >≤
+</button><button type="button" class="anniu" onclick="chaback('\\lim_{x\\to }',1)" >极限
+</button><button type="button" class="anniu" onclick="cha('\\infty ')" >∞
+</button><button type="button" class="anniu" onclick="chaback('\\int \\rmd{x}',7)" >积分
+</button><!--<button type="button" class="anniu" onclick="cha('f(x)')" >f(x)
+</button><button type="button" class="anniu" onclick=cha("f'(x)") >f '(x)
+</button><button type="button" class="anniu" onclick=cha("f''(x)") >f ''(x)
+</button>--><button type="button" class="anniu" onclick="cha('\\times ')" >×
+</button><button type="button" class="anniu" onclick="cha('\\cdot ')" >·
+</button><button type="button" class="anniu" onclick="cha('\\cdots ')" >…
+</button><!--<button type="button" class="anniu" onclick="cha('\\ldots ')" >...
+</button><button type="button" class="anniu" onclick="cha('\\div ')" >÷
+</button><button type="button" class="anniu" onclick="cha('\\equiv ')" >≡
+</button><button type="button" class="anniu" onclick="chaback('\\pmod{}',1)" >(mod )
+</button><button type="button" class="anniu" onclick="cha('\\approx ')" >≈
+</button>--><button type="button" class="anniu" onclick="cha('\\Delta ')" >Δ(判别式)
+</button><button type="button" class="anniu" onclick="cha('\\alpha ')" >α
+</button><button type="button" class="anniu" onclick="cha('\\beta ')" >β
+</button><button type="button" class="anniu" onclick="cha('\\gamma ')" >γ
+</button><button type="button" class="anniu" onclick="cha('\\theta ')" >θ
+</button><button type="button" class="anniu" onclick="cha('\\lambda ')" >λ
+</button><button type="button" class="anniu" onclick="cha('\\veps ')" >ε
+</button><button type="button" class="anniu" onclick="cha('\\varphi ')" >φ
+</button><button type="button" class="anniu" onclick="cha('\\omega ')" >ω
+</button><button type="button" class="anniu" onclick="cha('\\triangle ')" >△(三角形)
+</button><button type="button" class="anniu" onclick="cha('\\odot ')" >⊙
+</button><button type="button" class="anniu" onclick="cha('\\angle ')" >∠
+</button><button type="button" class="anniu" onclick="cha('\\du ')" >°
+</button><button type="button" class="anniu" onclick="cha('\\perp ')" >⊥
+</button><button type="button" class="anniu" onclick="cha('\\px ')" >//
+</button><button type="button" class="anniu" onclick="cha('\\sim ')" >相似
+</button><button type="button" class="anniu" onclick="cha('\\cong ')" >全等
+</button><button type="button" class="anniu" onclick="cha('\\pqd ')" >平行且等于
+</button><button type="button" class="anniu" onclick="cha('\\buji ')" >补集
+</button><button type="button" class="anniu" onclick="cha('\\kongji ')" >空集
+</button><!--<button type="button" class="anniu" onclick="cha('\\mbb{R}')" >R
+</button><button type="button" class="anniu" onclick="cha('\\mbb{N}')" >N
+</button><button type="button" class="anniu" onclick="cha('\\mbb{Z}')" >Z
+</button><button type="button" class="anniu" onclick="cha('\\mbb{Q}')" >Q
+</button><button type="button" class="anniu" onclick="cha('\\cup ')" >∪
+</button><button type="button" class="anniu" onclick="cha('\\cap ')" >∩
+</button><button type="button" class="anniu" onclick="cha('\\subseteq ')" >$\mathstrut{\subseteq}$
+</button><button type="button" class="anniu" onclick="cha('\\supseteq ')" >$\mathstrut{\supseteq}$
+</button><button type="button" class="anniu" onclick="cha('\\subsetneqq ')" >$\mathstrut{\subsetneqq}$
+</button><button type="button" class="anniu" onclick="cha('\\supsetneqq ')" >$\mathstrut{\supsetneqq}$
+</button>-->
+</div>
+
+<div id="outputWrap">
+<div id="output">
+  <textarea id="outputText" rows="15">
+  </textarea>
+</div>
+
+</div>
+
+<div id="outputWrap">
+<%= link_to 'Back', problems_path %>
+
+<script type="text/javascript">
+//预览函数
+function doPreview()
+{
+      var fdsa = document.getElementById("inputText").value;
+      var asdf = "";
+      for (var i = 0; i < fdsa.length; i++)
+      {
+        switch(fdsa.charCodeAt(i))
+        {
+        case 10:
+          asdf += "<br />";
+          break;
+        case 13:
+          asdf += "<br />";
+          break;
+        case 60:
+          asdf += "&lt;";
+          break;
+        case 62:
+          asdf += "&gt;";
+          break;
+        default:
+          asdf += fdsa.charAt(i);
+        }
+      }
+      document.getElementById('output').innerHTML = asdf;
+      //MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);
+      // $("#output").html(asdf);
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,document.getElementById("output")], function () {
+
+       });
+
+};
+
+window.onload = doPreview;
+inputText.onkeyup = doPreview;
+
+//预览切换
+function ylqh()
+{
+  var buttonName = document.getElementById("ztyl").value;
+
+  if (buttonName == "暂停预览")
+  {
+    inputText.onkeyup ="";
+    document.getElementById("ztyl").value = "继续预览"
+  }
+  else
+  {
+    inputText.onkeyup = doPreview;
+    document.getElementById("ztyl").value = "暂停预览";
+    doPreview()
+  }
+}
+
+//清空输入
+function clearinputText()
+{
+  document.getElementById("inputText").value="";
+
+  doPreview();
+
+}
+
+
+//光标处插入文本函数
+function insertAtCursor(myField, myValue) {
+//IE support
+if (document.selection) {
+myField.focus();
+sel = document.selection.createRange();
+sel.text = myValue;
+sel.select();
+}
+//MOZILLA/NETSCAPE support
+else if (myField.selectionStart || myField.selectionStart == '0') {
+var startPos = myField.selectionStart;
+var endPos = myField.selectionEnd;
+// save scrollTop before insert
+var restoreTop = myField.scrollTop;
+myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+if (restoreTop > 0) {
+myField.scrollTop = restoreTop;
+}
+myField.focus();
+myField.selectionStart = startPos + myValue.length;
+myField.selectionEnd = startPos + myValue.length;
+} else {
+myField.value += myValue;
+myField.focus();
+}
+}
+
+//控制光标
+//获取光标位置
+//单行文本框
+function getPositionForInput(ctrl){
+var CaretPos = 0;
+if (document.selection) { // IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+Sel.moveStart('character', -ctrl.value.length);
+CaretPos = Sel.text.length;
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//多行文本框
+function getPositionForTextArea(ctrl) {
+var CaretPos = 0;
+if(document.selection) {// IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+var Sel2 = Sel.duplicate();
+Sel2.moveToElementText(ctrl);
+var CaretPos = -1;
+while(Sel2.inRange(Sel)){
+Sel2.moveStart('character');
+CaretPos++;
+}
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//设置光标位置函数
+function setCursorPosition(ctrl, pos){
+if(ctrl.setSelectionRange){
+ctrl.focus();
+ctrl.setSelectionRange(pos,pos);
+}
+else if (ctrl.createTextRange) {
+var range = ctrl.createTextRange();
+range.collapse(true);
+range.moveEnd('character', pos);
+range.moveStart('character', pos);
+range.select();
+}
+}
+//光标后退n步（多行文本框）
+function BackForTextArea(targetId,n){
+setCursorPosition(
+document.getElementById(targetId),
+getPositionForTextArea(document.getElementById(targetId)) - n
+);
+}
+
+//在inputText插入文本
+function cha(codes) {
+insertAtCursor(document.getElementById('inputText'),codes);
+inputText.onkeyup()
+}
+//在inputText插入文本并后退n步
+function chaback(codes,n) {
+insertAtCursor(document.getElementById('inputText'),codes);
+BackForTextArea('inputText',n);
+inputText.onkeyup()
+}
+
+</script>
+
 
 <%= link_to 'Show', @problem %> |
 <%= link_to 'Back', problems_path %>
