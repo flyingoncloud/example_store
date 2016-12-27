@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Problem Text:</strong>
+  <%= @problem.problem_text %>
+</p>
+
+
+<p>
+  <strong>Image url:</strong>
+  <%= @problem.image_url %>
+</p>
+
+
+<%= link_to 'Edit', edit_problem_path(@problem) %> |
+<%= link_to 'Back', problems_path %>
+
+
+<script language="javascript" type="text/javascript">setTimeout("location.reload();",20000);</script>

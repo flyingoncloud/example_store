@@ -9,7 +9,7 @@
 # encoding: utf-8
 Product.delete_all
 Product.create!(title: 'CoffeeScript',
-  description: 
+  description:
     %{<p>
         CoffeeScript is JavaScript done right. It provides all of JavaScript's
 	functionality wrapped in a cleaner, more succinct syntax. In the first
@@ -17,7 +17,7 @@ Product.create!(title: 'CoffeeScript',
 	shows you how to hold onto all the power and flexibility of JavaScript
 	while writing clearer, cleaner, and safer code.
       </p>},
-  image_url:   'cs.jpg',    
+  image_url:   'cs.jpg',
   price: 36.00)
 # . . .
 Product.create!(title: 'Programming Ruby 1.9 & 2.0',
@@ -32,7 +32,7 @@ Product.create!(title: 'Programming Ruby 1.9 & 2.0',
 # . . .
 
 Product.create!(title: 'Rails Test Prescriptions',
-  description: 
+  description:
     %{<p>
         <em>Rails Test Prescriptions</em> is a comprehensive guide to testing
         Rails applications, covering Test-Driven Development from both a
@@ -43,3 +43,8 @@ Product.create!(title: 'Rails Test Prescriptions',
       </p>},
   image_url: 'rtp.jpg',
   price: 34.95)
+
+  Problem.create!(
+    problem_text:
+     '\[\left( \sum_{k=1}^n a_k b_k \right)^{\!\!2} \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)\]'
+  )

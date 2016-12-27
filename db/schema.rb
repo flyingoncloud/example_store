@@ -36,4 +36,11 @@ ActiveRecord::Schema.define(version: 20161206162721) do
     t.datetime "updated_at",                null: false
   end
 
+  create_table "problems", force: :cascade do |t|
+    t.text     "problem_text"
+    t.string   "image_url"
+    t.string   "knowledge_points"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 end
