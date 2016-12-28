@@ -44,9 +44,24 @@ ActiveRecord::Schema.define(version: 20161206162721) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "answers", force: :cascade do |t|
+    t.text     "answer_text"
+    t.integer  "problem_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "problem_tags", force: :cascade do |t|
+    t.integer  "problem_id"
+    t.string   "knowledge_point_id"
+    t.string   "tag_ids"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "knowledge_points", force: :cascade do |t|
     t.string   "name"
-    t.integer  "parent_id"
+    t.integer  "parent_id", default: 0
     t.string   "parent_name"
     t.integer  "level"
     t.text     "memo"
@@ -54,4 +69,17 @@ ActiveRecord::Schema.define(version: 20161206162721) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "name"
+    t.string   "alias"
+    t.integer  "parent_id", default: 0
+    t.string   "parent_name"
+    t.integer  "level"
+    t.text     "memo"
+    t.string   "is_leaf", default: "N"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
 end

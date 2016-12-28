@@ -82,39 +82,39 @@ $( function() {
     while (step = document.getElementById("Step"+i)) {step.style.visibility = "hidden"; i++}
   }
 
-MathJax.Hub.Queue( function () { addEvents();  } );
+  MathJax.Hub.Queue( function () { addEvents();  } );
 
 
-function addEvents() {
+  function addEvents() {
 
-var elems = document.getElementsByClassName("steps"), newInput;
+    var elems = document.getElementsByClassName("steps"), newInput;
 
-for (var i=0; i<elems.length; i++) {
-	var el = elems[i];
-	el.addEventListener('mouseover', function() {
-			this.style.cursor = 'pointer';
-			this.style.backgroundColor = "#F6CEF5";
-		}, false);
-	el.addEventListener('mouseout', function() {
-			this.style.cursor = 'auto';
-			this.style.backgroundColor = "#FFFFFF";
-		}, false);
-}
+    for (var i=0; i<elems.length; i++) {
+    	var el = elems[i];
+    	el.addEventListener('mouseover', function() {
+    			this.style.cursor = 'pointer';
+    			this.style.backgroundColor = "#F6CEF5";
+    		}, false);
+    	el.addEventListener('mouseout', function() {
+    			this.style.cursor = 'auto';
+    			this.style.backgroundColor = "#FFFFFF";
+    		}, false);
+    }
 
 
-for (var i=0; i<elems.length; i++) {
-    var el = elems[i];
+    for (var i=0; i<elems.length; i++) {
+        var el = elems[i];
 
-    $( el ).on( "click", function() {
-      var index = ("" + this.id).substr(4,5)
-      array[index - 1] = formulaCodeGeneric( index, index )
+        $( el ).on( "click", function() {
+          var index = ("" + this.id).substr(4,5)
+          array[index - 1] = formulaCodeGeneric( index, index )
 
-      //pass the data to UI dialog. it will be returned back for calculating the formula
-      dialog.data("myArray", array).data("rowIndex", index).data("totalRows", 5).dialog( "open" );
-    });
-	};
+          //pass the data to UI dialog. it will be returned back for calculating the formula
+          dialog.data("myArray", array).data("rowIndex", index).data("totalRows", 5).dialog( "open" );
+        });
+    	};
 
-}
+    }
 
     var dialog, form,
 
@@ -182,6 +182,7 @@ for (var i=0; i<elems.length; i++) {
         dialog.dialog( "close" );
       }
 
+
       return valid;
     }
 
@@ -210,5 +211,25 @@ for (var i=0; i<elems.length; i++) {
     $( "#create-user" ).button().on( "click", function() {
       dialog.dialog( "open" );
     });
+
+    $('#kpSelection').on("change", function(){
+      var value = $("#kpSelection option:selected" ).val();
+      alert("selected: " + value)
+      // alert("changed value:" + value)
+      // if (value == "") return;
+      //
+      // $.ajax({
+      //     type:'GET',
+      //     dataType:"json",
+      //     url:'/knowledge_points/'+ value + '/all_children' ,
+      //
+      //     success:function(data){
+      //       //I assume you want to do something on controller action execution success?
+      //       // alert("data:" + JSON.stringify(data))
+      //       populate_second_KP_form(data)
+      //     }
+      //   });
+    });
+
   } );
 </script>

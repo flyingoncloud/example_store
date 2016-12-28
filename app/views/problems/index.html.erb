@@ -60,18 +60,70 @@
   <div id="dialog-form" title="解题分析">
     <div id = "KP">
     </div>
+    <div id = "secondKP">
+    </div>
 
     <script>
-      var data = ["因式分解", "一元二次方程", "函数", "有理数", "不等式"];
-      var html = '<div> <p> 知识点 </p>';
-      html += '<select id="kpSelection">';
-      for (var i=0; i < data.length; i++) {
-        html += '<option value ="' + data[i] + '\">' + data[i] + '</option>';
+
+    // $('#kpSelection').on("change", function(){
+    //   var value = $("#kpSelection option:selected" ).val();
+    //   alert("selected: " + value)
+    //   // alert("changed value:" + value)
+    //   // if (value == "") return;
+    //   //
+    //   // $.ajax({
+    //   //     type:'GET',
+    //   //     dataType:"json",
+    //   //     url:'/knowledge_points/'+ value + '/all_children' ,
+    //   //
+    //   //     success:function(data){
+    //   //       //I assume you want to do something on controller action execution success?
+    //   //       // alert("data:" + JSON.stringify(data))
+    //   //       populate_second_KP_form(data)
+    //   //     }
+    //   //   });
+    // });
+
+
+    $.ajax({
+        type:'GET',
+        dataType:"json",
+        url:'/knowledge_points/-1/all_children' ,
+        success:function(data){
+          //I assume you want to do something on controller action execution success?
+          // alert("data:" + JSON.stringify(data))
+          populate_knowledge_point_form(data)
+        }
+      });
+
+      function handleOnChange(event){
+        alert("event: " + event)
+        var value = $("#kpSelection option:selected" ).val();
+        alert("selected: " + value)
       }
-      html += '</select></div>'
-      $("#KP").append(html);
 
 
+      function populate_knowledge_point_form(data){
+        var html = '<div> <p> 知识点 </p>';
+        html += '<select id="kpSelection">';
+        for (var i=0; i < data.length; i++) {
+          html += '<option value ="' + data[i].id + '\">' + data[i].name + '</option>';
+        }
+        html += '</select></div>'
+        $("#KP").append(html);
+      }
+
+      function populate_second_KP_form(data){
+        var html = '<div> <p> 二级知识点 </p>';
+        html += '<select id="secondKPSelection">';
+        for (var i=0; i < data.length; i++) {
+          html += '<option value ="' + data[i].id + '\">' + data[i].name + '</option>';
+        }
+        html += '</select></div>'
+        $("#secondKP").append(html);
+      }
+
+      $('#kpSelection').onchange = handleOnChange
     </script>
   </div>
 
