@@ -1,0 +1,122 @@
+<h1>New Knowledge Point</h1>
+<div>
+
+</div>
+
+<%= (button_tag "Add First Level", :class =>".addFirstLevel", :style => 'width:180px;font-size:12px', :onclick => 'addFirstLevel()' ) %>
+<%= (button_tag "Add Second Level", :class =>".addSecondLevel", :style => 'width:180px;font-size:12px', :onclick => 'addSecondLevel()' ) %>
+<%= (button_tag "Add Third Level", :class =>".addThirdLevel", :style => 'width:180px;font-size:12px', :onclick => 'addThirdLevel()' ) %>
+
+
+<%= form_for @knowledge_point, url: {action: "create"} do |f| %>
+  <%= hidden_field_tag "current_action", :id => "current_action" %>
+  <br>
+  <div id="firstLevel">
+  Add First Level
+  <br>
+  <%= f.text_area  :firstLevelKPSet, id: "firstLevelKPSet", rows: 5, style: "width:30%" %>
+  </div>
+
+
+  <div id="secondLevel">
+    Add Second Level
+    <br>
+    Parent Knowledge Point:
+    <%= f.select :secondLevelParent, options_for_select(@all_children.map {|kp| [kp.name, kp.id]}), :prompt => "Please Select" %>
+    <br>
+    <%= f.text_area :secondLevelKPSet, id: "secondLevelKPSet", rows: 5, style: "width:30%" %>
+  </div>
+
+  <div id="thirdLevel">
+    Add Third Level
+    <br>
+    First Level Knowledge Point:
+    <%= f.select :thirdLevelGrandParent, options_for_select(@all_children.map {|kp| [kp.name, kp.id]}), :prompt => "Please Select" %>
+    <br>
+    Second Level Knowledge Point:
+    <%= f.select :thirdLevelParent, options_for_select(@all_second_children.map {|kp| [kp.name, kp.id]}), :prompt => "Please Select" %>
+    <br>
+    <%= f.text_area  :thirdLevelKPSet, id: "thirdLevelKPSet", rows: 5, style: "width:30%" %>
+  </div>
+
+  <%= f.submit "Save", id: "save_kp" %>
+
+<% end %>
+<%= link_to 'Back', knowledge_points_path %>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    $('#firstLevel').hide();
+    $('#secondLevel').hide();
+    $('#thirdLevel').hide();
+
+    $('#save_kp').disable
+  });
+
+  $('#knowledge_point_thirdLevelGrandParent').on("change", function(){
+    var value = $("#knowledge_point_thirdLevelGrandParent option:selected" ).val();
+    // alert("changed value:" + value)
+    if (value == "") return;
+
+    $.ajax({
+        type:'GET',
+        dataType:"json",
+        url:'/knowledge_points/'+ value + '/all_children' ,
+
+        success:function(data){
+          //I assume you want to do something on controller action execution success?
+          // alert("data:" + JSON.stringify(data))
+          populate_knowledge_point_form(data)
+        }
+      });
+  });
+
+  $('#knowledge_point_thirdLevelParent').on("change", function(){
+    //
+    // var value = $( "#thirdLevelGrandParent option:selected" ).text();
+    // // alert("changed value:" + value)
+    // if (value == "") return;
+    //
+    // var all_children = "#{all_children_knowledge_points_path}?selected_parent_id=" + value;
+    // alert("Found children:" + all_children.length)
+  });
+
+  function populate_knowledge_point_form(data){
+    // var children_kps = JSON.stringify(data)
+    $.each(data, function(){
+            $("#knowledge_point_thirdLevelParent").append('<option value="'+ this.id +'">'+ this.name +'</option>')
+    })
+    // for ( var i = 0; i < data.length; i++ ){
+    //   alert("child: " + data[i].name)
+    //   // $('#dbi_engine_config_' + column).attr('value', dbi_engine[column]);
+    // }
+
+  }
+
+  function addFirstLevel() {
+    $('#firstLevel').show();
+    $('#secondLevel').hide();
+    $('#thirdLevel').hide();
+    $('#save_kp').enable
+    $('#current_action').val("firstLevelAction")
+
+    // alert("current action:" + $('#current_action').val())
+  }
+
+  function addSecondLevel() {
+    $('#firstLevel').hide();
+    $('#secondLevel').show();
+    $('#thirdLevel').hide();
+    $('#current_action').val("secondLevelAction");
+    // alert("current action:" + $('#current_action').val())
+  }
+
+  function addThirdLevel() {
+    $('#firstLevel').hide();
+    $('#secondLevel').hide();
+    $('#thirdLevel').show();
+    $('#current_action').val("thirdLevelAction")
+
+    // alert("current action:" + $('#current_action').val())
+  }
+</script>

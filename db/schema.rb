@@ -43,4 +43,15 @@ ActiveRecord::Schema.define(version: 20161206162721) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "knowledge_points", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "parent_id"
+    t.string   "parent_name"
+    t.integer  "level"
+    t.text     "memo"
+    t.string   "is_leaf", default: "N"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 end
