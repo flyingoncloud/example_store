@@ -199,6 +199,14 @@ $( function() {
           dialog.dialog( "close" );
         }
       },
+      open: function(event, ui) {
+        $( "#kpSelection" ).selectmenu({
+          change: function( event, data ) {
+            var value = $("#kpSelection option:selected" ).val();
+            alert('you got me.' + value);
+          }
+         });
+      },
       close: function() {
         // form[ 0 ].reset();
         allFields.removeClass( "ui-state-error" );
@@ -215,24 +223,7 @@ $( function() {
       dialog.dialog( "open" );
     });
 
-    $('#kpSelection').on("change", function(){
-      var value = $("#kpSelection option:selected" ).val();
-      alert("selected: " + value)
-      // alert("changed value:" + value)
-      // if (value == "") return;
-      //
-      // $.ajax({
-      //     type:'GET',
-      //     dataType:"json",
-      //     url:'/knowledge_points/'+ value + '/all_children' ,
-      //
-      //     success:function(data){
-      //       //I assume you want to do something on controller action execution success?
-      //       // alert("data:" + JSON.stringify(data))
-      //       populate_second_KP_form(data)
-      //     }
-      //   });
-    });
-
   } );
+
+
 </script>
