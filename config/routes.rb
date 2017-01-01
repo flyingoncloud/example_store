@@ -11,5 +11,5 @@ Rails.application.routes.draw do
     end
   end
 
-  root to: 'store#index', as: 'store'
+  root to: 'problems#index'
 end
