@@ -15,18 +15,35 @@
 <!-- <textarea id="inputText" rows="15">
 
 </textarea> -->
-
+<div >
 <%= form_for @problem, url: {action: "create"} do |f| %>
-
    <%= f.text_area :problem_text, id: "inputText", rows: 10, style: "width:100%" %>
+   <%= f.hidden_field  :image_ids, :value => "123456"%>
+   <%= f.file_field  :image_url, :id => "uploaded_images", :multiple => true%>
+   <div id="show_image" class="row">
+      <div class="colummns large-12">
+        <div class="row">
+        <div class="large-4 columns">
+          <br/>
+          <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
+          </ul>
+          <br/>
+        </div>
+      </div>
+      </div>
+   </div>
    <%= f.submit "Create" %>
 <% end %>
+</div>
 
 <div>
   <input type="button" id="ztyl" value="暂停预览" onclick="ylqh()" />
   <input type="button" value="清空" onclick="clearinputText()" />
 </div>
+
+
 <br />
+<div id="latex_keyboard">
 <button type="button" class="anniu" onclick="chaback('$  $',2)" >行内公式
 </button><button type="button" class="anniu" onclick="chaback('\\[  \\]',3)" >行间公式
 </button><button type="button" class="anniu" onclick="chaback('\\begin{align*}\n\n\\end{align*}',13)" >align*环境
@@ -93,6 +110,7 @@
 </button><button type="button" class="anniu" onclick="cha('\\supsetneqq ')" >$\mathstrut{\supsetneqq}$
 </button>-->
 </div>
+</div>
 
 <div id="outputWrap">
 <div id="output">
@@ -102,8 +120,9 @@
 
 </div>
 
-<div id="outputWrap">
+<div id="outputWrap"/>
 <%= link_to 'Back', problems_path %>
+
 
 <script type="text/javascript">
 //预览函数
@@ -265,5 +284,29 @@ insertAtCursor(document.getElementById('inputText'),codes);
 BackForTextArea('inputText',n);
 inputText.onkeyup()
 }
+
+function showImages(input) {
+  var file, i, len, reader, ref;
+  if (input.files && input.files[0]) {
+    ref = input.files;
+    $('#photos_clearing').html('')
+    for (i = 0, len = ref.length; i < len; i++) {
+      file = ref[i];
+      reader = new FileReader();
+      reader.onload = function (e) {
+        var image_html;
+        image_html = '<li><a class="th" href="' + e.target.result + '"><img width="75" src="' + e.target.result + '"></a></li>';
+        // alert("image_html:" + image_html)
+        $('#photos_clearing').append(image_html);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+$("#uploaded_images").on('change', function (e) {
+  showImages(this)
+  // alert("images:" + images)
+});
 
 </script>

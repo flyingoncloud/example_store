@@ -6,12 +6,22 @@ class ProblemsController < ApplicationController
   # GET /problems.json
   def index
     @problems = Problem.all
+    if @problems then
+      @problems.each do |problem|
+        if problem.image_ids then
+          @images = Image.where("id in ?", problem.image_ids )
+
+          Rails.logger.debug("Found images: #{@images}")
+        end
+      end
+
+    end
   end
 
   # GET /problems/1
   # GET /problems/1.json
   def show
-
+    Rails.logger.info("urls: #{@problem.image_urls}")
   end
 
   # GET /problems/new
@@ -26,7 +36,23 @@ class ProblemsController < ApplicationController
   # POST /problems
   # POST /problems.json
   def create
+    upload = params['problem']['image_url']
+
+    # it is array as supporting multiple uploading
+    image_ids = []
+    image_urls = []
+    if upload
+      upload.each do |image_url|
+        image = Image.save(image_url)
+        image_urls.push(ApplicationHelper::UPLOAD_BASE_PATH + "/" + image.image_url)
+        image_ids.push(image.id)
+      end
+    end
+
+    Rails.logger.debug("uploaded images: #{image_ids.to_s}")
     @problem = Problem.new(problem_params)
+    @problem.image_ids = image_ids.to_s
+    @problem.image_urls = image_urls.join(',')
 
     respond_to do |format|
       if @problem.save
@@ -72,7 +98,7 @@ class ProblemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def problem_params
-      params.require(:problem).permit(:problem_text)
+      params.require(:problem).permit(:problem_text, :image_url, :image_ids)
     end
 
     def problems_layout

@@ -7,8 +7,12 @@
 
 
 <p>
-  <strong>Image url:</strong>
-  <%= @problem.image_url %>
+  <% if @problem.image_urls %>
+  <strong>Images:</strong>
+  <% @problem.image_urls.split(",").each do |url| %>
+  <%= image_tag(url, class: 'list_image') %>
+  <% end %>
+  <% end %>
 </p>
 
 

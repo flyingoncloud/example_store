@@ -5,16 +5,17 @@
 <table>
 <% @problems.each do |problem|%>
   <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
-    <td>
-      <% if problem.image_url %>
-      <%= image_tag(problem.image_url, class: 'list_image') %>
-      <% end %>
-    </td>
-
     <td class="list_description">
       <dl>
         <dt><%= problem.problem_text %></dt>
       </dl>
+    </td>
+    <td>
+      <% if problem.image_urls %>
+      <% problem.image_urls.split(",").each do |url| %>
+      <%= image_tag(url, class: 'list_image') %>
+      <% end %>
+      <% end %>
     </td>
 
     <td class="list_actions">

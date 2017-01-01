@@ -38,23 +38,21 @@ ActiveRecord::Schema.define(version: 20161206162721) do
 
   create_table "problems", force: :cascade do |t|
     t.text     "problem_text"
-    t.string   "image_url"
-    t.string   "knowledge_points"
+    t.string   "image_urls", null: true
+    t.string   "image_ids", null: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.string   "image_url"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "answers", force: :cascade do |t|
     t.text     "answer_text"
     t.integer  "problem_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "problem_tags", force: :cascade do |t|
-    t.integer  "problem_id"
-    t.string   "knowledge_point_id"
-    t.string   "tag_ids"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -81,5 +79,21 @@ ActiveRecord::Schema.define(version: 20161206162721) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "problem_knowledge_points", force: :cascade do |t|
+    t.integer  "problem_id"
+    t.string   "knowledge_point_ids"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "problem_tags", force: :cascade do |t|
+    t.integer  "problem_id"
+    t.string   "knowledge_point_id"
+    t.string   "tag_ids"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
 
 end

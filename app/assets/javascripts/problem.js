@@ -186,6 +186,8 @@ $( function() {
       return valid;
     }
 
+
+
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
       height: 400,
@@ -201,6 +203,7 @@ $( function() {
         // form[ 0 ].reset();
         allFields.removeClass( "ui-state-error" );
       }
+
     });
 
     form = dialog.find( "form" ).on( "submit", function( event ) {
