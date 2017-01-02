@@ -8,18 +8,19 @@
 
     <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
 
 
-    <%= stylesheet_link_tag "http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css", media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_link_tag "http://jqueryui.com/resources/demos/style.css", media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag "https://code.jquery.com/jquery-1.12.4.js", 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag "https://code.jquery.com/ui/1.12.1/jquery-ui.js", 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css", media: 'all' %>
+    <%= stylesheet_link_tag "http://jqueryui.com/resources/demos/style.css", media: 'all' %>
+    <%= javascript_include_tag "https://code.jquery.com/jquery-1.12.4.js" %>
+    <%= javascript_include_tag "https://code.jquery.com/ui/1.12.1/jquery-ui.js" %>
+    
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
       tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        inlineMath: [['$','$'],['\\[','\\]'],['\\(','\\)']],
         processEscapes: true
       },
       TeX: {

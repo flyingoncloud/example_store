@@ -1,7 +1,7 @@
 class Problem < ApplicationRecord
   # has_many :image
   # has_many :answer
-
+  attr_accessor  :normalized_problem_text
   validates :problem_text, presence: true
   # validates :validate_image_urls
   # image_urls, allow_blank: true, format: {

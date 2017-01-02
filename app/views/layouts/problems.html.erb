@@ -12,10 +12,10 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
 
-    <%= stylesheet_link_tag "http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css", media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_link_tag "http://jqueryui.com/resources/demos/style.css", media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag "https://code.jquery.com/jquery-1.12.4.js", 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag "https://code.jquery.com/ui/1.12.1/jquery-ui.js", 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css", media: 'all' %>
+    <%= stylesheet_link_tag "http://jqueryui.com/resources/demos/style.css", media: 'all' %>
+    <%= javascript_include_tag "https://code.jquery.com/jquery-1.12.4.js" %>
+    <%= javascript_include_tag "https://code.jquery.com/ui/1.12.1/jquery-ui.js" %>
 
 
     <script type="text/x-mathjax-config">
@@ -25,14 +25,21 @@
         extensions: ["tex2jax.js"],
         messageStyle: "none",
         jax: ["input/TeX","output/HTML-CSS"],
-        tex2jax: { inlineMath: [['$','$'],['\\[','\\]'],['\\(','\\)']] },
+        tex2jax: {
+          inlineMath: [['$','$'],['\\[','\\]'],['\\(','\\)']],
+          processEscapes: true
+        },
         "HTML-CSS": {
           availableFonts:[],
           styles: {".MathJax_Preview": {visibility: "hidden"}}
         }
       });
     </script>
-    <%= javascript_include_tag "https://cdn.mathjax.org/mathjax/latest/MathJax.js", 'data-turbolinks-track': 'reload' %>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
 
     <style>
         label, input { display:block; }

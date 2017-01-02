@@ -19,6 +19,7 @@
 <%= form_for @problem, url: {action: "update"} do |f| %>
 
    <%= f.text_area :problem_text, id: "inputText", rows: 10, style: "width:100%" %>
+   <%= f.hidden_field :normalized_problem_text, id: "normalizedInputText" %>
    <%= f.hidden_field  :image_ids%>
    <%= f.file_field  :image_url, :id => "uploaded_images", :multiple => true%>
    <div id="show_image" class="row">
@@ -146,11 +147,15 @@ function doPreview()
         }
       }
       document.getElementById('output').innerHTML = asdf;
+      // document.getElementById('normalizedInputText').innerHTML = asdf;
+      $("#normalizedInputText").html('')
+      $("#normalizedInputText").val(asdf)
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);
       //MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);
       // $("#output").html(asdf);
-      MathJax.Hub.Queue(["Typeset",MathJax.Hub,document.getElementById("output")], function () {
-
-       });
+      // MathJax.Hub.Queue(["Typeset",MathJax.Hub,document.getElementById("output")], function () {
+      //
+      //  });
 
 };
 

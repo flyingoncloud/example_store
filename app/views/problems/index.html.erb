@@ -7,7 +7,11 @@
   <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
     <td class="list_description">
       <dl>
-        <dt><%= problem.problem_text %></dt>
+        <% if problem.normalized_problem_text %>
+        <dt><%= problem.normalized_problem_text.html_safe %></dt>
+        <% else %>
+        <dt><%= problem.problem_text.html_safe %></dt>
+        <% end %>
       </dl>
     </td>
     <td>
