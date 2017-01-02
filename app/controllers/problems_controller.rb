@@ -120,7 +120,7 @@ class ProblemsController < ApplicationController
     end
 
     def normalized_html(problem_text)
-      charCodeMap = { 10.chr  => "<br/>", 13.chr => "<br/>"}  #, 60.chr => "&lt;", 62.chr => "&gt;"
+      charCodeMap = { 60.chr => "&lt;", 62.chr => "&gt;", 10.chr  => "<br/>", 13.chr => "<br/>"}  #, 60.chr => "&lt;", 62.chr => "&gt;"
       charCodeMap.each do |key, value|
         problem_text = problem_text.gsub(key, value)
         # Rails.logger.debug("******: #{key}->#{value}, #{problem_text}")
