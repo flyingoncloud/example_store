@@ -1,6 +1,6 @@
 class Problem < ApplicationRecord
   # has_many :image
-  # has_many :answer
+  has_many :answers
   attr_accessor  :normalized_problem_text
   validates :problem_text, presence: true
   # validates :validate_image_urls

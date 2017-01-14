@@ -21,28 +21,26 @@
 
    <%= f.hidden_field :normalized_problem_text, id: "normalizedInputText" %>
 
-   <%= f.hidden_field  :image_ids, :value => "123456"%>
-   <%= f.file_field  :image_url, :id => "uploaded_images", :multiple => true%>
-   <div id="show_image" class="row">
-      <div class="colummns large-12">
-        <div class="row">
-        <div class="large-4 columns">
-          <br/>
-          <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
-          </ul>
-          <br/>
-        </div>
-      </div>
-      </div>
+   <div id="problem_answers">
+       <%= render 'problem_answer' %>
    </div>
+   <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
+
+   <%= f.hidden_field  :image_ids, :value => "123456"%>
+   <%= f.file_field  :image_url, :id => "uploaded_images", accept: 'image/png,image/jpeg', :multiple => true%>
+
+   <div>
+     <button name="ztyl" type="button" class="anniu" onclick="ylqh()">暂停预览</button>
+     <button type="button" class="anniu" onclick="clearinputText()"> 清空 </button>
+     <!-- <input type="button" id="ztyl" value="暂停预览" onclick="ylqh()" />
+     <input type="button" value="清空" onclick="clearinputText()" /> -->
+   </div>
+
    <%= f.submit "Create" %>
 <% end %>
 </div>
 
-<div>
-  <input type="button" id="ztyl" value="暂停预览" onclick="ylqh()" />
-  <input type="button" value="清空" onclick="clearinputText()" />
-</div>
+
 
 
 <br />
@@ -116,15 +114,30 @@
 </div>
 
 <div id="outputWrap">
-<div id="output">
-  <textarea id="outputText" rows="15">
-  </textarea>
-</div>
-
+  <div id="output">
+    <textarea id="outputText" rows="15">
+    </textarea>
+  </div>
 </div>
 
 <div id="outputWrap"/>
 <%= link_to 'Back', problems_path %>
+<div id="show_image" class="row">
+   <div class="colummns large-12">
+     <div class="row">
+     <div class="large-4 columns">
+       <br/>
+       <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
+       </ul>
+       <br/>
+     </div>
+   </div>
+   </div>
+</div>
+
+<div style="display: none;" id="new_answer_form">
+    <%= render partial: "problem_answer", locals: {poll: false} %>
+</div>
 
 
 <script type="text/javascript">
@@ -153,6 +166,33 @@ function doPreview()
           asdf += fdsa.charAt(i);
         }
       }
+
+      var answers = document.getElementsByName("answers");
+      for (var index = 0; index < answers.length; index++) {
+        var answer = answers[index].value
+        for (var i = 0; i < answer.length; i++)
+        {
+          switch(answer.charCodeAt(i))
+          {
+          case 10:
+            asdf += "<br />";
+            break;
+          case 13:
+            asdf += "<br />";
+            break;
+          case 60:
+            asdf += "&lt;";
+            break;
+          case 62:
+            asdf += "&gt;";
+            break;
+          default:
+            asdf += answer.charAt(i);
+          }
+        }
+      }
+
+
       document.getElementById('output').innerHTML = asdf;
       // document.getElementById('normalizedInputText').innerHTML = asdf;
 
@@ -167,20 +207,34 @@ function doPreview()
 window.onload = doPreview;
 inputText.onkeyup = doPreview;
 
+function findButtonbyTextContent(text) {
+  var buttons = document.querySelectorAll('button');
+  for (var i=0, l=buttons.length; i<l; i++) {
+    if (buttons[i].firstChild.nodeValue == text)
+      return buttons[i];
+  }
+}
+
 //预览切换
 function ylqh()
 {
-  var buttonName = document.getElementById("ztyl").value;
+  // var buttonName = document.getElementById("ztyl").value;
 
+  var button = findButtonbyTextContent("暂停预览")
+  if (button == null) {
+    button = findButtonbyTextContent("继续预览")
+  }
+  var buttonName = button.firstChild.nodeValue
   if (buttonName == "暂停预览")
   {
     inputText.onkeyup ="";
-    document.getElementById("ztyl").value = "继续预览"
+    button.firstChild.nodeValue = "继续预览"
+
   }
   else
   {
     inputText.onkeyup = doPreview;
-    document.getElementById("ztyl").value = "暂停预览";
+    button.firstChild.nodeValue = "暂停预览";
     doPreview()
   }
 }
@@ -189,7 +243,6 @@ function ylqh()
 function clearinputText()
 {
   document.getElementById("inputText").value="";
-
   doPreview();
 
 }
@@ -300,7 +353,7 @@ function showImages(input) {
       reader = new FileReader();
       reader.onload = function (e) {
         var image_html;
-        image_html = '<li><a class="th" href="' + e.target.result + '"><img width="75" src="' + e.target.result + '"></a></li>';
+        image_html = '<a class="th" href="' + e.target.result + '"><img width="50%" src="' + e.target.result + '"></a>';
         // alert("image_html:" + image_html)
         $('#photos_clearing').append(image_html);
       };
@@ -314,4 +367,12 @@ $("#uploaded_images").on('change', function (e) {
   // alert("images:" + images)
 });
 
+
+$("#addNewAnswer").on("click", function(e) {
+  $("#problem_answers").append($("#new_answer_form").html())
+});
+
+function removeChoice(element) {
+  return element.parent().remove();
+};
 </script>

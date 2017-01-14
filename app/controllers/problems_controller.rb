@@ -35,20 +35,23 @@ class ProblemsController < ApplicationController
   # GET /problems/1/edit
   def edit
     Rails.logger.debug("edit>>>>: #{@problem.problem_text}" )
-    Rails.logger.debug("edit****: #{@problem.normalized_problem_text}" )
+    @problem.answers.each do |answer|
+      Rails.logger.debug("edit>>>>answer_text: #{answer.answer_text}" )
+    end
+    @answers = @problem.answers
 
   end
 
   # POST /problems
   # POST /problems.json
   def create
-    upload = params['problem']['image_url']
+    uploaded_images = params['problem']['image_url']
 
     # it is array as supporting multiple uploading
     image_ids = []
     image_urls = []
-    if upload
-      upload.each do |image_url|
+    if uploaded_images
+      uploaded_images.each do |image_url|
         image = Image.save(image_url)
         image_urls.push(ApplicationHelper::UPLOAD_BASE_PATH + "/" + image.image_url)
         image_ids.push(image.id)
@@ -61,6 +64,8 @@ class ProblemsController < ApplicationController
     @problem.image_ids = image_ids.to_s
     @problem.image_urls = image_urls.join(',')
     @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    @problem.answers = build_answers()
+
 
     respond_to do |format|
       if @problem.save
@@ -78,6 +83,7 @@ class ProblemsController < ApplicationController
   def update
 
     @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    @problem.answers = build_answers()
 
     Rails.logger.debug(">>>after normailzation: #{@problem.normalized_problem_text}")
 
@@ -111,7 +117,7 @@ class ProblemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def problem_params
-      params.require(:problem).permit(:problem_text, :image_url, :image_ids, :normalized_problem_text)
+      params.require(:problem).permit(:problem_text, :image_url, :image_ids, :answers)
     end
 
     def problems_layout
@@ -126,6 +132,19 @@ class ProblemsController < ApplicationController
         # Rails.logger.debug("******: #{key}->#{value}, #{problem_text}")
       end
       problem_text
+    end
+
+    def build_answers
+      answers = params['answers']
+
+      problem_answers = []
+      answers.each do |answer_text|
+        @answer = Answer.new()
+        @answer.answer_text = answer_text
+        problem_answers.push(@answer)
+        Rails.logger.debug(">>>answer: #{answer_text}")
+      end
+      problem_answers
     end
 
 end
