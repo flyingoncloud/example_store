@@ -26,7 +26,6 @@
    </div>
    <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
 
-   <%= f.hidden_field  :image_ids, :value => "123456"%>
    <%= f.file_field  :image_url, :id => "uploaded_images", accept: 'image/png,image/jpeg', :multiple => true%>
 
    <div>
@@ -167,7 +166,7 @@ function doPreview()
         }
       }
 
-      var answers = document.getElementsByName("answers");
+      var answers = document.getElementsByName("answers[]");
       for (var index = 0; index < answers.length; index++) {
         var answer = answers[index].value
         for (var i = 0; i < answer.length; i++)

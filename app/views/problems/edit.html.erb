@@ -28,7 +28,6 @@
   </div>
   <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
 
-  <%= f.hidden_field  :image_ids, :value => "123456"%>
   <%= f.file_field  :image_url, :id => "uploaded_images", accept: 'image/png,image/jpeg', :multiple => true%>
 
   <div>
@@ -119,6 +118,24 @@
 
 <div id="outputWrap">
 <%= link_to 'Back', problems_path %>
+<div id="show_image" class="row">
+   <div class="colummns large-12">
+     <div class="row">
+     <div class="large-4 columns">
+       <br/>
+       <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
+         <div id="image_urls">
+         <% @images.each do |image| %>
+           <% image_size = (300/@images.size).to_s + "x" + (200/@images.size).to_s %>
+           <%= image_tag(image.image_url, size: image_size) %>
+         <% end %>
+         </div>
+       </ul>
+       <br/>
+     </div>
+   </div>
+   </div>
+</div>
 
 <div style="display: none;" id="new_answer_form">
     <%= render partial: "problem_answer", locals: {poll: false} %>
@@ -153,9 +170,11 @@ function doPreview()
         }
       }
 
-      var answers = document.getElementsByName("answers");
+      var answers = document.getElementsByName("answers[]");
       for (var index = 0; index < answers.length; index++) {
         var answer = answers[index].value
+        // alert("answers: " + answer)
+
         for (var i = 0; i < answer.length; i++)
         {
           switch(answer.charCodeAt(i))
@@ -329,13 +348,20 @@ function showImages(input) {
   var file, i, len, reader, ref;
   if (input.files && input.files[0]) {
     ref = input.files;
+    len = ref.length
+    size_width = 300/len;
+    size_height = 250/len;
+    image_size = size_width + "x" + size_height;
+    // alert("image_size:" + image_size)
+
     $('#photos_clearing').html('')
-    for (i = 0, len = ref.length; i < len; i++) {
+    for (i = 0; i < len; i++) {
       file = ref[i];
+
       reader = new FileReader();
       reader.onload = function (e) {
         var image_html;
-        image_html = '<li><a class="th" href="' + e.target.result + '"><img width="75" src="' + e.target.result + '"></a></li>';
+        image_html = '<a class="th" href="' + e.target.result + '"><img width=' + image_size + '  src="' + e.target.result + '"></a>';
         // alert("image_html:" + image_html)
         $('#photos_clearing').append(image_html);
       };

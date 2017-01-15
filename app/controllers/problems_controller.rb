@@ -6,17 +6,6 @@ class ProblemsController < ApplicationController
   # GET /problems.json
   def index
     @problems = Problem.all
-    if @problems then
-      @problems.each do |problem|
-        if problem.image_ids then
-          @images = Image.where("id in ?", problem.image_ids )
-          problem.normalized_problem_text = normalized_html(problem.problem_text)
-
-          Rails.logger.debug("Found images: #{@images}")
-        end
-      end
-
-    end
   end
 
   # GET /problems/1
@@ -38,31 +27,22 @@ class ProblemsController < ApplicationController
     @problem.answers.each do |answer|
       Rails.logger.debug("edit>>>>answer_text: #{answer.answer_text}" )
     end
+    @problem.images.each do |image|
+      Rails.logger.debug("edit>>>>image: #{image.image_url}" )
+    end
+
     @answers = @problem.answers
+    @images = @problem.images
 
   end
 
   # POST /problems
   # POST /problems.json
   def create
-    uploaded_images = params['problem']['image_url']
-
-    # it is array as supporting multiple uploading
-    image_ids = []
-    image_urls = []
-    if uploaded_images
-      uploaded_images.each do |image_url|
-        image = Image.save(image_url)
-        image_urls.push(ApplicationHelper::UPLOAD_BASE_PATH + "/" + image.image_url)
-        image_ids.push(image.id)
-      end
-    end
-
-    Rails.logger.debug("uploaded images: #{image_ids.to_s}")
-
     @problem = Problem.new(problem_params)
-    @problem.image_ids = image_ids.to_s
-    @problem.image_urls = image_urls.join(',')
+    @problem.images = build_images()
+    # @problem.image_ids = image_ids.to_s
+    # @problem.image_urls = image_urls.join(',')
     @problem.normalized_problem_text = normalized_html(@problem.problem_text)
     @problem.answers = build_answers()
 
@@ -81,8 +61,8 @@ class ProblemsController < ApplicationController
   # PATCH/PUT /problems/1
   # PATCH/PUT /problems/1.json
   def update
-
     @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    @problem.images = build_images()
     @problem.answers = build_answers()
 
     Rails.logger.debug(">>>after normailzation: #{@problem.normalized_problem_text}")
@@ -117,7 +97,7 @@ class ProblemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def problem_params
-      params.require(:problem).permit(:problem_text, :image_url, :image_ids, :answers)
+      params.require(:problem).permit(:problem_text, :answers)
     end
 
     def problems_layout
@@ -138,13 +118,50 @@ class ProblemsController < ApplicationController
       answers = params['answers']
 
       problem_answers = []
-      answers.each do |answer_text|
-        @answer = Answer.new()
-        @answer.answer_text = answer_text
-        problem_answers.push(@answer)
-        Rails.logger.debug(">>>answer: #{answer_text}")
+      if answers
+        answers.each do |answer_text|
+          @answer = Answer.new()
+          @answer.answer_text = answer_text
+          problem_answers.push(@answer)
+          Rails.logger.debug(">>>answer: #{answer_text}")
+        end
       end
       problem_answers
     end
 
+    def build_images
+      uploaded_images = params['problem']['image_url']
+
+      Rails.logger.debug(">>>>uploaded_images: #{uploaded_images}")
+      # it is array as supporting multiple uploading
+      images = []
+      if uploaded_images
+        uploaded_images.each do |uploaded_image|
+          if save_image_file? (uploaded_image)
+            image = Image.new()
+            image.image_url = ApplicationHelper::UPLOAD_BASE_PATH + "/" + uploaded_image.original_filename
+            images.push(image);
+            Rails.logger.debug(">>>>uploaded_image: #{image.image_url}")
+          end
+        end
+      end
+      images
+    end
+
+    def save_image_file?(uploaded_image)
+      name = uploaded_image.original_filename
+      tempfile = uploaded_image.tempfile
+      begin
+        # create the file path
+        imagePath = Rails.root.join('app/assets/images', 'uploads', name);
+
+        # write the file
+        File.open(imagePath, "wb") { |f| f.write(tempfile.read) }
+      rescue Exception => e
+        Rails.logger.error("Cannot save images.", e)
+        false
+      end
+
+      true
+    end
 end

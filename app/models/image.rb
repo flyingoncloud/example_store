@@ -1,6 +1,6 @@
 class Image < ApplicationRecord
 
-  # belongs_to :problem
+  belongs_to :problem
 
   validates :image_url, presence: true
 
@@ -13,23 +13,4 @@ class Image < ApplicationRecord
     Image.order(:updated_at).last
   end
 
-  def self.save(upload)
-    name = upload.original_filename
-    tempfile = upload.tempfile
-
-    # create the file path
-    imagePath = Rails.root.join('app/assets/images', 'uploads', name);
-
-    # write the file
-    File.open(imagePath, "wb") { |f| f.write(tempfile.read) }
-
-    @image = Image.new()
-    @image.image_url = name
-    @image.save
-
-    Rails.logger.debug("Saved image: #{@image.id}")
-
-    @image
-
-   end
 end

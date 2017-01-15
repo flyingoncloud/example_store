@@ -1,5 +1,5 @@
 class Problem < ApplicationRecord
-  # has_many :image
+  has_many :images
   has_many :answers
   attr_accessor  :normalized_problem_text
   validates :problem_text, presence: true
