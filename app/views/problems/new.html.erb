@@ -19,8 +19,6 @@
 <%= form_for @problem, url: {action: "create"} do |f| %>
    <%= f.text_area :problem_text, id: "inputText", rows: 10, style: "width:100%" %>
 
-   <%= f.hidden_field :normalized_problem_text, id: "normalizedInputText" %>
-
    <div id="problem_answers">
        <%= render 'problem_answer' %>
    </div>
@@ -167,6 +165,10 @@ function doPreview()
       }
 
       var answers = document.getElementsByName("answers[]");
+      if (answers.length > 0) {
+        asdf += "<br />";
+        asdf += "Answers:<br />";
+      }
       for (var index = 0; index < answers.length; index++) {
         var answer = answers[index].value
         for (var i = 0; i < answer.length; i++)
@@ -371,7 +373,5 @@ $("#addNewAnswer").on("click", function(e) {
   $("#problem_answers").append($("#new_answer_form").html())
 });
 
-function removeChoice(element) {
-  return element.parent().remove();
-};
+
 </script>

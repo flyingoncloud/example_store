@@ -8,6 +8,14 @@
   <% else %>
   <dt><%= @problem.problem_text.html_safe %></dt>
   <% end %>
+
+  <% if @problem.normalized_answers %>
+  <strong>Answer:</strong>
+  <% @problem.normalized_answers.each do |normalized_answer_text| %>
+    <dt><%= normalized_answer_text.html_safe %></dt>
+  <% end %>
+  <% end %>
+
 </dov>
 </p>
 

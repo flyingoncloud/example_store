@@ -12,9 +12,9 @@ class ProblemsController < ApplicationController
   # GET /problems/1.json
   def show
     Rails.logger.info("urls: #{@problem.image_urls}")
-    @problem.normalized_problem_text = normalized_html(@problem.problem_text)
-    @answers = @problem.answers
-    @images = @problem.images
+    # @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    # @answers = @problem.answers
+    # @images = @problem.images
 
   end
 
@@ -33,8 +33,8 @@ class ProblemsController < ApplicationController
       Rails.logger.debug("edit>>>>image: #{image.image_url}" )
     end
 
-    @answers = @problem.answers
-    @images = @problem.images
+    # @answers = @problem.answers
+    # @images = @problem.images
 
   end
 
@@ -45,7 +45,7 @@ class ProblemsController < ApplicationController
     @problem.images = build_images()
     # @problem.image_ids = image_ids.to_s
     # @problem.image_urls = image_urls.join(',')
-    @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    # @problem.normalized_problem_text = normalized_html(@problem.problem_text)
     @problem.answers = build_answers()
 
 
@@ -63,8 +63,11 @@ class ProblemsController < ApplicationController
   # PATCH/PUT /problems/1
   # PATCH/PUT /problems/1.json
   def update
-    @problem.normalized_problem_text = normalized_html(@problem.problem_text)
-    @problem.images = build_images()
+    # @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    images = build_images()
+    Rails.logger.debug(">>>have new images: #{images.size}")
+    @problem.images = images if images.size > 0
+
     @problem.answers = build_answers()
 
     Rails.logger.debug(">>>after normailzation: #{@problem.normalized_problem_text}")
@@ -107,14 +110,14 @@ class ProblemsController < ApplicationController
       action_name.exclude?("new") ? "problems":"problem_new"
     end
 
-    def normalized_html(problem_text)
-      charCodeMap = { 60.chr => "&lt;", 62.chr => "&gt;", 10.chr  => "<br/>", 13.chr => "<br/>"}  #, 60.chr => "&lt;", 62.chr => "&gt;"
-      charCodeMap.each do |key, value|
-        problem_text = problem_text.gsub(key, value)
-        # Rails.logger.debug("******: #{key}->#{value}, #{problem_text}")
-      end
-      problem_text
-    end
+    # def normalized_html(problem_text)
+    #   charCodeMap = { 60.chr => "&lt;", 62.chr => "&gt;", 10.chr  => "<br/>", 13.chr => "<br/>"}  #, 60.chr => "&lt;", 62.chr => "&gt;"
+    #   charCodeMap.each do |key, value|
+    #     problem_text = problem_text.gsub(key, value)
+    #     # Rails.logger.debug("******: #{key}->#{value}, #{problem_text}")
+    #   end
+    #   problem_text
+    # end
 
     def build_answers
       answers = params['answers']

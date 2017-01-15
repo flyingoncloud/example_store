@@ -22,9 +22,13 @@
   <%= f.hidden_field :normalized_problem_text, id: "normalizedInputText" %>
 
   <div id="problem_answers">
-  <% @answers.each do |answer| %>
-      <%= text_area_tag "answers[]", answer.answer_text, id: "answers", rows: 5, style: "width:90%" %>
+  <% if @problem.answers %>
+  <strong>Answers:</strong>
+  <% @problem.answers.each do |answer| %>
+    <%= text_area_tag "answers[]", answer.answer_text, id: "answers", rows: 5, style: "width:90%" %>
   <% end %>
+  <% end %>
+
   </div>
   <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
 
@@ -125,10 +129,13 @@
        <br/>
        <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
          <div id="image_urls">
-         <% @images.each do |image| %>
-           <% image_size = (300/@images.size).to_s + "x" + (200/@images.size).to_s %>
-           <%= image_tag(image.image_url, size: image_size) %>
-         <% end %>
+           <% if @problem.image_urls %>
+           <strong>Images:</strong>
+           <% @problem.image_urls.each do |image_url| %>
+             <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
+             <%= image_tag(image_url, size: image_size) %>
+           <% end %>
+           <% end %>
          </div>
        </ul>
        <br/>
@@ -175,7 +182,7 @@ function doPreview()
         asdf += "<br />";
         asdf += "Answers:<br />";
       }
-            
+
       for (var index = 0; index < answers.length; index++) {
         var answer = answers[index].value
         // alert("answers: " + answer)
@@ -375,6 +382,10 @@ function showImages(input) {
     }
   }
 }
+
+function removeChoice(element) {
+  return element.parent().remove();
+};
 
 $("#uploaded_images").on('change', function (e) {
   showImages(this)
