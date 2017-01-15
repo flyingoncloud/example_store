@@ -16,7 +16,7 @@
     </td>
     <td>
       <% if problem.image_urls %>
-      <% problem.image_urls.split(",").each do |url| %>
+      <% problem.image_urls.each do |url| %>
       <%= image_tag(url, class: 'list_image') %>
       <% end %>
       <% end %>

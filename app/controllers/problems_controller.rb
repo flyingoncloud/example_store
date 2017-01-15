@@ -13,6 +13,8 @@ class ProblemsController < ApplicationController
   def show
     Rails.logger.info("urls: #{@problem.image_urls}")
     @problem.normalized_problem_text = normalized_html(@problem.problem_text)
+    @answers = @problem.answers
+    @images = @problem.images
 
   end
 
