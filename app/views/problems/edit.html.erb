@@ -171,12 +171,15 @@ function doPreview()
       }
 
       var answers = document.getElementsByName("answers[]");
+      if (answers.length > 0) {
+        asdf += "<br />";
+        asdf += "Answers:<br />";
+      }
+            
       for (var index = 0; index < answers.length; index++) {
         var answer = answers[index].value
         // alert("answers: " + answer)
 
-        asdf += "<br />";
-        asdf += "Answers:<br />";
 
         for (var i = 0; i < answer.length; i++)
         {

@@ -13,6 +13,14 @@ class Problem < ApplicationRecord
     Problem.order(:updated_at).last
   end
 
+  def image_urls
+    image_urls = []
+    images.each do |image|
+      image_urls.push(image.image_url.to_s)
+    end
+    image_urls
+  end
+
   def validate_image_urls
 
   end
