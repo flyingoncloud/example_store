@@ -82,7 +82,7 @@
         div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
         .ui-dialog .ui-state-error { padding: .3em; }
         .validateTips { border: 1px solid transparent; padding: 0.3em; }
-      </style>
+   </style>
 
   </head>
 
@@ -108,3 +108,342 @@
     <footer> <%= @count %> </footer>
   </body>
 </html>
+
+
+<script type="text/javascript">
+jQuery.expr[':'].regex = function(elem, index, match) {
+    var matchParams = match[3].split(','),
+        validLabels = /^(data|css):/,
+        attr = {
+            method: matchParams[0].match(validLabels) ?
+                        matchParams[0].split(':')[0] : 'attr',
+            property: matchParams.shift().replace(validLabels,'')
+        },
+        regexFlags = 'ig',
+        regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+    return regex.test(jQuery(elem)[attr.method](attr.property));
+}
+
+//预览函数
+function doPreview()
+{
+      var fdsa = document.getElementById("inputText").value;
+      var asdf = "";
+      for (var i = 0; i < fdsa.length; i++)
+      {
+        switch(fdsa.charCodeAt(i))
+        {
+        case 10:
+          asdf += "<br />";
+          break;
+        case 13:
+          asdf += "<br />";
+          break;
+        case 60:
+          asdf += "&lt;";
+          break;
+        case 62:
+          asdf += "&gt;";
+          break;
+        default:
+          asdf += fdsa.charAt(i);
+        }
+      }
+
+      // var answers = document.getElementsByName("answers[]");
+      var answers = $(':regex(id, ^answers_text_[0-9]+)')
+      // alert("found answers:" + answers.length)
+      if (answers.length > 0) {
+        asdf += "<br />";
+        asdf += "Answers:<br />";
+      }
+      for (var index = 0; index < answers.length; index++) {
+        var answer = answers[index].value
+        // alert("myAnswer:" + answer)
+        for (var i = 0; i < answer.length; i++)
+        {
+          switch(answer.charCodeAt(i))
+          {
+          case 10:
+            asdf += "<br />";
+            break;
+          case 13:
+            asdf += "<br />";
+            break;
+          case 60:
+            asdf += "&lt;";
+            break;
+          case 62:
+            asdf += "&gt;";
+            break;
+          default:
+            asdf += answer.charAt(i);
+          }
+        }
+      }
+
+
+      document.getElementById('output').innerHTML = asdf;
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,document.getElementById("output")], function () {
+
+       });
+
+};
+
+window.onload = doPreview;
+inputText.onkeyup = doPreview;
+
+function findButtonbyTextContent(text) {
+  var buttons = document.querySelectorAll('button');
+  for (var i=0, l=buttons.length; i<l; i++) {
+    if (buttons[i].firstChild.nodeValue == text)
+      return buttons[i];
+  }
+}
+
+//预览切换
+function ylqh()
+{
+  // var buttonName = document.getElementById("ztyl").value;
+
+  var button = findButtonbyTextContent("暂停预览")
+  if (button == null) {
+    button = findButtonbyTextContent("继续预览")
+  }
+  var buttonName = button.firstChild.nodeValue
+  if (buttonName == "暂停预览")
+  {
+    inputText.onkeyup ="";
+    button.firstChild.nodeValue = "继续预览"
+
+  }
+  else
+  {
+    inputText.onkeyup = doPreview;
+    button.firstChild.nodeValue = "暂停预览";
+    doPreview()
+  }
+}
+
+//清空输入
+function clearinputText()
+{
+  document.getElementById("inputText").value="";
+  doPreview();
+
+}
+
+
+//光标处插入文本函数
+function insertAtCursor(myField, myValue) {
+//IE support
+if (document.selection) {
+myField.focus();
+sel = document.selection.createRange();
+sel.text = myValue;
+sel.select();
+}
+//MOZILLA/NETSCAPE support
+else if (myField.selectionStart || myField.selectionStart == '0') {
+var startPos = myField.selectionStart;
+var endPos = myField.selectionEnd;
+// save scrollTop before insert
+var restoreTop = myField.scrollTop;
+myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+if (restoreTop > 0) {
+myField.scrollTop = restoreTop;
+}
+myField.focus();
+myField.selectionStart = startPos + myValue.length;
+myField.selectionEnd = startPos + myValue.length;
+} else {
+myField.value += myValue;
+myField.focus();
+}
+}
+
+//控制光标
+//获取光标位置
+//单行文本框
+function getPositionForInput(ctrl){
+var CaretPos = 0;
+if (document.selection) { // IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+Sel.moveStart('character', -ctrl.value.length);
+CaretPos = Sel.text.length;
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//多行文本框
+function getPositionForTextArea(ctrl) {
+var CaretPos = 0;
+if(document.selection) {// IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+var Sel2 = Sel.duplicate();
+Sel2.moveToElementText(ctrl);
+var CaretPos = -1;
+while(Sel2.inRange(Sel)){
+Sel2.moveStart('character');
+CaretPos++;
+}
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//设置光标位置函数
+function setCursorPosition(ctrl, pos){
+if(ctrl.setSelectionRange){
+ctrl.focus();
+ctrl.setSelectionRange(pos,pos);
+}
+else if (ctrl.createTextRange) {
+var range = ctrl.createTextRange();
+range.collapse(true);
+range.moveEnd('character', pos);
+range.moveStart('character', pos);
+range.select();
+}
+}
+//光标后退n步（多行文本框）
+function BackForTextArea(targetId,n){
+setCursorPosition(
+document.getElementById(targetId),
+getPositionForTextArea(document.getElementById(targetId)) - n
+);
+}
+
+//在inputText插入文本
+function cha(codes) {
+insertAtCursor(document.getElementById('inputText'),codes);
+inputText.onkeyup()
+}
+//在inputText插入文本并后退n步
+function chaback(codes,n) {
+insertAtCursor(document.getElementById('inputText'),codes);
+BackForTextArea('inputText',n);
+inputText.onkeyup()
+}
+
+function showImages(input) {
+  var file, i, len, reader, ref;
+  if (input.files && input.files[0]) {
+    ref = input.files;
+    $('#photos_clearing').html('<strong> Images for Problem</strong> :')
+    for (i = 0, len = ref.length; i < len; i++) {
+      file = ref[i];
+      reader = new FileReader();
+      reader.onload = function (e) {
+        var image_html;
+        image_html = '<br> <a class="th" href="' + e.target.result + '"><img width="50%" src="' + e.target.result + '"></a>';
+        // alert("image_html:" + image_html)
+        $('#photos_clearing').append(image_html);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+function showAnswerImages(input, index) {
+
+  var file, i, len, reader, ref;
+  // var index =  event.data.value
+  var answer_image_id = "answer_" + index + "_images";
+
+  if (input.files && input.files[0]) {
+    ref = input.files;
+    // $('#show_answer_image').html('')
+    $("#"+answer_image_id).html('<strong> Images for Answer ' + index + '</strong> :<br>')
+    for (i = 0, len = ref.length; i < len; i++) {
+      file = ref[i];
+      $('#debug_info').append( "Clicked "+ index +  ", name:" + answer_image_id + ", uploaded image:" +  file  + "<br>");
+
+      reader = new FileReader();
+      reader.onload = function (e) {
+        var image_html;
+        image_html = '<a class="th" href="' + e.target.result + '"><img width="50%" src="' + e.target.result + '"></a>';
+        // alert("image_html:" + image_html)
+        // $('#debug_info').append(image_html)
+        $("#"+answer_image_id).append(image_html);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+$("#uploaded_images").on('change', function (e) {
+  showImages(this)
+  // alert("images:" + images)
+});
+
+function removeChoice(element) {
+  var index = element.attr("id").substring(2)
+  // alert("index removed:" + index)
+  removeAnswerIndex(index)
+  return element.parent().remove();
+};
+
+var index = 0;
+if (<%= @problem != nil && @problem.answers != nil %>) {
+  index = <%= @problem.answers.length %>;
+}
+
+var answers_count = 0
+$("#addNewAnswer").on("click", function(e) {
+  index = index + 1
+  answers_count = answers_count + 1
+  var value = $("#new_answer_form").html();
+
+  value = value.replace(/myvar_/g, index)
+
+  // alert("value:" + value)
+
+
+  appendAnswerIndex(index);
+  // alert("index: " + index)
+  $("#problem_answers").append(value)
+  $("#answers_text_" + index).keyup(doPreview);
+
+  $("#uploaded_answer_images_" + index).on('change', {value: index}, function (e) {
+    var msgs = [
+      "<br> button = " + $( this ).index(),
+      "event.data.value = " + e.data.value,
+      "i = " + index
+    ];
+    $('#debug_info').append( msgs.join( ", " ) + "<br>" );
+
+    showAnswerImages(this, e.data.value)
+  });
+
+  var answer_image_id = "answer_" + index + "_images";
+
+  var answer_html = '<ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing> </ul>';
+  $('#debug_info').append(answer_html)
+  $("#answer_image_placeholder").append(answer_html);
+});
+
+function appendAnswerIndex(index) {
+  var currentIndexes = $("#answers_count").val()
+  if (index == 1) {
+    currentIndexes = " " + index + " "
+  } else {
+    currentIndexes = currentIndexes + " " + index + " "
+  }
+  $("#answers_count").val(currentIndexes)
+
+
+  // alert("indexes:" + currentIndexes)
+}
+
+function removeAnswerIndex(index) {
+  var currentIndexes = $("#answers_count").val()
+  currentIndexes = currentIndexes.replace(" " + index + " ", " ")
+  $("#answers_count").val(currentIndexes)
+  // alert("indexes:" + currentIndexes)
+}
+
+</script>
