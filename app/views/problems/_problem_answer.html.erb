@@ -3,6 +3,6 @@
      <%= text_area_tag "answers_myvar_", nil, rows: 5, style: "width:90%", id: "answers_text_myvar_"%>
      <%= link_to "X", "#", :onclick => "removeChoice($(this)) && doPreview()", :class => "remove-choice", :id => "X_myvar_" %>
      <%= label_tag "Answer Images:" %>
-     <%= file_field_tag  "answer_image_url_myvar_", id: "uploaded_answer_images_myvar_", accept: 'image/png,image/jpeg', multiple: true%>
+     <%= file_field_tag  "answer_image_url_myvar_[]", id: "uploaded_answer_images_myvar_", accept: 'image/png,image/jpeg', multiple: true%>
 
 </div>

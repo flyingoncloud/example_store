@@ -1,6 +1,4 @@
-<h1>Editing problem</h1>
-
-<!-- <%= render 'form', problem: @problem %> -->
+<h1>New Excercise</h1>
 
 <div class="ad_footerbanner" id="ad_footerbanner3">
 <style type="text/css">
@@ -12,47 +10,13 @@
 </style>
 
 <div id="inputWrap">
-<!-- <textarea id="inputText" rows="15">
+<textarea id="inputText" rows="15">
 
-</textarea> -->
-
-<%= form_for @problem, url: {action: "update"} do |f| %>
-  <%= f.text_area :problem_text, id: "inputText", rows: 10, style: "width:100%" %>
-  <%= f.file_field  :image_url, :id => "uploaded_images", accept: 'image/png,image/jpeg', :multiple => true%>
-
-  <%= f.hidden_field  :answers_count, :id => "answers_count" %>
-
-  <div id="problem_answers">
-  <% if @problem.answers %>
-  <strong>Answers:</strong>
-  <% index = 1 %>
-  <% @problem.answers.each do |answer| %>
-  <div class="choiceForm">
-      <%= label_tag "Answer_" + index.to_s + ":" %>
-      <%= text_area_tag "answers_" + index.to_s, answer.answer_text, rows: 5, style: "width:90%", id: "answers_text_" + index.to_s %>
-      <%= link_to "X", "#", :onclick => "removeChoice($(this)) && doPreview()", :class => "remove-choice", :id => "X_" + index.to_s %>
-      <!-- <%= link_to "X", "", :onclick => "removeChoice($(this)) && doPreview()", :class => "remove-choice", :id => "X_" + index.to_s %> -->
-      <%= label_tag "Answer_" + index.to_s + "_Images:" %>
-      <%= file_field_tag  "answer_image_url_" + index.to_s, :id => "uploaded_answer_images_" + index.to_s, accept: 'image/png,image/jpeg', :multiple => true%>
-
-      <% index = index + 1 %>
-  </div>
-  <% end %>
-  <% end %>
-
-  </div>
-  <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
-
-  <div>
-    <button name="ztyl" type="button" class="anniu" onclick="ylqh()">暂停预览</button>
-    <button type="button" class="anniu" onclick="clearinputText()"> 清空 </button>
-    <!-- <input type="button" id="ztyl" value="暂停预览" onclick="ylqh()" />
-    <input type="button" value="清空" onclick="clearinputText()" /> -->
-  </div>
-
-  <%= f.submit "Update" %>
-<% end %>
-
+</textarea>
+<div>
+  <input type="button" id="ztyl" value="暂停预览" onclick="ylqh()" />
+  <input type="button" value="清空" onclick="clearinputText()" />
+</div>
 <br />
 <button type="button" class="anniu" onclick="chaback('$  $',2)" >行内公式
 </button><button type="button" class="anniu" onclick="chaback('\\[  \\]',3)" >行间公式
@@ -130,59 +94,167 @@
 </div>
 
 <div id="outputWrap">
-<%= link_to 'Back', problems_path %>
-<div id="show_image" class="row">
-   <div class="colummns large-12">
-     <div class="row">
-     <div class="large-4 columns">
-       <br/>
-       <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
-         <div id="image_urls">
-           <% if @problem.image_urls %>
-           <strong>Problem Images:</strong> <br>
-           <% @problem.image_urls.each do |image_url| %>
-             <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
-             <%= image_tag(image_url, size: image_size) %>
-           <% end %>
-           <% end %>
-         </div>
-       </ul>
-       <br/>
-     </div>
-   </div>
-   </div>
-</div>
+<%= link_to 'Back', excercises_path %>
 
-<div id="show_answer_image" class="row">
-   <div class="colummns large-12">
-     <div class="row">
-     <div class="large-4 columns">
-       <br/>
-       <div id="answer_image_placeholder" >
-         <div id="image_urls">
-           <% if @problem.answers %>
-           <strong>Answers:</strong>
-           <% index = 1 %>
-           <% @problem.answers.each do |answer| %>
-               <%= label_tag 'Answer_' + index.to_s + '_Images:' %>
-               <ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing>'
-               <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
-               <% answer.image_urls.each do |image_url| %>
-                 <% answer_image_id = "answer_" + index.to_s + "_images"; %>
-                 <%= image_tag(image_url, id: answer_image_id, size: image_size) %>
-               <% end %>
-               </ul>
-               <% index = index + 1 %>
-           <% end %>
-           <% end %>
-         </div>
-       </div>
-       <br/>
-     </div>
-   </div>
-   </div>
-</div>
+<script type="text/javascript">
+//预览函数
+function doPreview()
+{
+      var fdsa = document.getElementById("inputText").value;
+      var asdf = "";
+      for (var i = 0; i < fdsa.length; i++)
+      {
+        switch(fdsa.charCodeAt(i))
+        {
+        case 10:
+          asdf += "<br />";
+          break;
+        case 13:
+          asdf += "<br />";
+          break;
+        case 60:
+          asdf += "&lt;";
+          break;
+        case 62:
+          asdf += "&gt;";
+          break;
+        default:
+          asdf += fdsa.charAt(i);
+        }
+      }
+      document.getElementById('output').innerHTML = asdf;
+      //MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);
+      // $("#output").html(asdf);
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,document.getElementById("output")], function () {
 
-<div style="display: none;" id="new_answer_form">
-    <%= render partial: "problem_answer", locals: {index: $myvar } %>
-</div>
+       });
+
+};
+
+window.onload = doPreview;
+inputText.onkeyup = doPreview;
+
+//预览切换
+function ylqh()
+{
+  var buttonName = document.getElementById("ztyl").value;
+
+  if (buttonName == "暂停预览")
+  {
+    inputText.onkeyup ="";
+    document.getElementById("ztyl").value = "继续预览"
+  }
+  else
+  {
+    inputText.onkeyup = doPreview;
+    document.getElementById("ztyl").value = "暂停预览";
+    doPreview()
+  }
+}
+
+//清空输入
+function clearinputText()
+{
+  document.getElementById("inputText").value="";
+
+  doPreview();
+
+}
+
+
+//光标处插入文本函数
+function insertAtCursor(myField, myValue) {
+//IE support
+if (document.selection) {
+myField.focus();
+sel = document.selection.createRange();
+sel.text = myValue;
+sel.select();
+}
+//MOZILLA/NETSCAPE support
+else if (myField.selectionStart || myField.selectionStart == '0') {
+var startPos = myField.selectionStart;
+var endPos = myField.selectionEnd;
+// save scrollTop before insert
+var restoreTop = myField.scrollTop;
+myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+if (restoreTop > 0) {
+myField.scrollTop = restoreTop;
+}
+myField.focus();
+myField.selectionStart = startPos + myValue.length;
+myField.selectionEnd = startPos + myValue.length;
+} else {
+myField.value += myValue;
+myField.focus();
+}
+}
+
+//控制光标
+//获取光标位置
+//单行文本框
+function getPositionForInput(ctrl){
+var CaretPos = 0;
+if (document.selection) { // IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+Sel.moveStart('character', -ctrl.value.length);
+CaretPos = Sel.text.length;
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//多行文本框
+function getPositionForTextArea(ctrl) {
+var CaretPos = 0;
+if(document.selection) {// IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+var Sel2 = Sel.duplicate();
+Sel2.moveToElementText(ctrl);
+var CaretPos = -1;
+while(Sel2.inRange(Sel)){
+Sel2.moveStart('character');
+CaretPos++;
+}
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//设置光标位置函数
+function setCursorPosition(ctrl, pos){
+if(ctrl.setSelectionRange){
+ctrl.focus();
+ctrl.setSelectionRange(pos,pos);
+}
+else if (ctrl.createTextRange) {
+var range = ctrl.createTextRange();
+range.collapse(true);
+range.moveEnd('character', pos);
+range.moveStart('character', pos);
+range.select();
+}
+}
+//光标后退n步（多行文本框）
+function BackForTextArea(targetId,n){
+setCursorPosition(
+document.getElementById(targetId),
+getPositionForTextArea(document.getElementById(targetId)) - n
+);
+}
+
+//在inputText插入文本
+function cha(codes) {
+insertAtCursor(document.getElementById('inputText'),codes);
+inputText.onkeyup()
+}
+//在inputText插入文本并后退n步
+function chaback(codes,n) {
+insertAtCursor(document.getElementById('inputText'),codes);
+BackForTextArea('inputText',n);
+inputText.onkeyup()
+}
+
+</script>

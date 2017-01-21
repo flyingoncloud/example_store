@@ -22,14 +22,27 @@
 
 <p>
   <% if @problem.image_urls %>
-  <strong>Images:</strong>
+  <strong>Problem Images:</strong> <br>
+  <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
   <% @problem.image_urls.each do |image_url| %>
-    <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
     <%= image_tag(image_url, size: image_size) %>
   <% end %>
   <% end %>
 </p>
 
+<p>
+  <% if @problem.answers %>
+  <% @problem.answers.each do |answer| %>
+    <% if answer.image_urls %>
+      <br> <strong>Answer Images:</strong> <br>
+      <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
+      <% answer.image_urls.each do |image_url| %>
+        <%= image_tag(image_url, size: image_size) %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% end %>
+</p>
 
 <%= link_to 'Edit', edit_problem_path(@problem) %> |
 <%= link_to 'Back', problems_path %>

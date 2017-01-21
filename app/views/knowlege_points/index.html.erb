@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Knowledge Points</h1>
+
+<table>
+<% @knowledge_points.each do |kp|%>
+  <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
+
+    <td class="list_description">
+      <dl>
+        <dt><%= kp.name %></dt>
+      </dl>
+      <dl>
+        <dt><%= kp.parent %></dt>
+      </dl>
+      <dl>
+        <dt><%= kp.grandparent %></dt>
+      </dl>
+    </td>
+
+    <td class="list_actions">
+      <%= link_to 'Show', kp%><br/>
+      <%= link_to 'Edit', edit_knowledge_point_path(kp) %><br/>
+      <%= link_to 'Destroy', kp, method: :delete,
+                   data: { confirm: 'Deleted?' } %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+
+<%= link_to 'New Knowledge Point', new_knowledge_point_path %>

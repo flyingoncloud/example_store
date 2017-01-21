@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   resources :line_items
   resources :carts
   resources :products
-  resources :problems
+  resources :problems do
+    resources :answers
+  end
 
   # get 'knowledge_points/all_children' => 'knowledge_points#all_children'
   resources :knowledge_points do

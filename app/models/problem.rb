@@ -1,7 +1,7 @@
 class Problem < ApplicationRecord
-  has_many :images
+  # has_many :images
   has_many :answers
-  # attr_accessor  :normalized_problem_text
+  attr_accessor  :answers_count, :images
   validates :problem_text, presence: true
   # validates :validate_image_urls
   # image_urls, allow_blank: true, format: {
@@ -13,11 +13,24 @@ class Problem < ApplicationRecord
     Problem.order(:updated_at).last
   end
 
+  def find_images
+    if image_ids then
+      @images = Image.find(image_ids.split(",").map{ |id| id.to_i })  #where("id in ?", image_ids)
+      Rails.logger.debug("Found images: #{@images}")
+    end
+
+    @images
+  end
+
   def image_urls
     image_urls = []
-    images.each do |image|
-      image_urls.push(image.image_url.to_s)
+    @images = find_images
+    if @images
+      @images.each do |image|
+        image_urls.push(image.image_url.to_s)
+      end
     end
+
     image_urls
   end
 
