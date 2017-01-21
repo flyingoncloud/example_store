@@ -3,11 +3,6 @@ class Problem < ApplicationRecord
   has_many :answers
   attr_accessor  :answers_count, :images
   validates :problem_text, presence: true
-  # validates :validate_image_urls
-  # image_urls, allow_blank: true, format: {
-  #   with: %r{\.(gif|jpg|png)\Z}i,
-  #   message: 'The URL must point to an image format GIF, JPG, PNG.'
-  # }
 
   def self.latest
     Problem.order(:updated_at).last

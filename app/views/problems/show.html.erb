@@ -22,9 +22,9 @@
 
 <p>
   <% if @problem.image_urls %>
-  <strong>Problem Images:</strong> <br>
-  <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
+  <strong>Images:</strong>
   <% @problem.image_urls.each do |image_url| %>
+    <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
     <%= image_tag(image_url, size: image_size) %>
   <% end %>
   <% end %>
