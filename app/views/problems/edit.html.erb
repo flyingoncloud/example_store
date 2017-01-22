@@ -164,12 +164,14 @@
            <strong>Answers:</strong>
            <% index = 1 %>
            <% @problem.answers.each do |answer| %>
-               <%= label_tag 'Answer_' + index.to_s + '_Images:' %>
-               <ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing>'
-               <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
-               <% answer.image_urls.each do |image_url| %>
-                 <% answer_image_id = "answer_" + index.to_s + "_images"; %>
-                 <%= image_tag(image_url, id: answer_image_id, size: image_size) %>
+               <% if answer.image_urls  %>
+                 <%= label_tag 'Answer_' + index.to_s + '_Images:' %>
+                 <ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing>'
+                 <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
+                 <% answer.image_urls.each do |image_url| %>
+                   <% answer_image_id = "answer_" + index.to_s + "_images"; %>
+                   <%= image_tag(image_url, id: answer_image_id, size: image_size) %>
+                 <% end %>
                <% end %>
                </ul>
                <% index = index + 1 %>
