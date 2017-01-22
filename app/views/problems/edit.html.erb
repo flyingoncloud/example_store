@@ -20,8 +20,6 @@
   <%= f.text_area :problem_text, id: "inputText", rows: 10, style: "width:100%" %>
   <%= f.file_field  :image_url, :id => "uploaded_images", accept: 'image/png,image/jpeg', :multiple => true%>
 
-  <%= f.hidden_field  :answers_count, :id => "answers_count" %>
-
   <div id="problem_answers">
   <% if @problem.answers %>
   <strong>Answers:</strong>
@@ -41,6 +39,7 @@
   <% end %>
 
   </div>
+
   <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
 
   <div>
@@ -138,7 +137,7 @@
        <br/>
        <ul id="photos_clearing" class="clearing-thumbs" data-clearing>
          <div id="image_urls">
-           <% if @problem.image_urls %>
+           <% if @problem.image_urls && @problem.image_urls.size > 0 %>
            <strong>Problem Images:</strong> <br>
            <% @problem.image_urls.each do |image_url| %>
              <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
@@ -164,7 +163,7 @@
            <strong>Answers:</strong>
            <% index = 1 %>
            <% @problem.answers.each do |answer| %>
-               <% if answer.image_urls  %>
+               <% if answer.image_urls && answer.image_urls.size > 0 %>
                  <%= label_tag 'Answer_' + index.to_s + '_Images:' %>
                  <ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing>'
                  <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
