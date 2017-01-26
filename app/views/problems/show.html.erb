@@ -1,48 +1,59 @@
 <p id="notice"><%= notice %></p>
 
-<p>
+
 <div id="problem_text">
+  <p>
   <strong>Problem Text:</strong>
   <% if @problem.normalized_problem_text %>
-  <dt><%= @problem.normalized_problem_text.html_safe %></dt>
+  <p><%= @problem.normalized_problem_text.html_safe %></p>
   <% else %>
-  <dt><%= @problem.problem_text.html_safe %></dt>
+  <p><%= @problem.problem_text.html_safe %></p>
   <% end %>
-
+  </p>
+</div>
+<div id="answers_text">
+  <p>
   <% if @problem.normalized_answers %>
-  <strong>Answer:</strong>
-  <% @problem.normalized_answers.each do |normalized_answer_text| %>
-    <dt><%= normalized_answer_text.html_safe %></dt>
+    <% index = 1 %>
+    <strong>Answers:</strong>
+    <% @problem.normalized_answers.each do |normalized_answer_text| %>
+      <p><strong> Answer <%= index %> Text: </strong> <%= normalized_answer_text.html_safe %></p>
+      <% index = index + 1 %>
+    <% end %>
   <% end %>
-  <% end %>
-
-</dov>
-</p>
+  </p>
+</div>
 
 
+<div id="problem_images">
 <p>
   <% if @problem.image_urls %>
-  <strong>Images:</strong>
+  <strong>Problem Images:</strong><br>
   <% @problem.image_urls.each do |image_url| %>
     <% image_size = (300/@problem.image_urls.size).to_s + "x" + (200/@problem.image_urls.size).to_s %>
     <%= image_tag(image_url, size: image_size) %>
   <% end %>
   <% end %>
 </p>
+</div>
 
+<div id="answer_images">
 <p>
   <% if @problem.answers %>
+  <% index = 1 %>
   <% @problem.answers.each do |answer| %>
-    <% if answer.image_urls %>
-      <br> <strong>Answer Images:</strong> <br>
+    <% if answer.image_urls && answer.image_urls.size > 0 %>
+      <br> <strong>Answer <%= index %> Images:</strong> <br>
       <% answer.image_urls.each do |image_url| %>
         <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
         <%= image_tag(image_url, size: image_size) %>
       <% end %>
+      <% index = index + 1 %>
     <% end %>
   <% end %>
   <% end %>
 </p>
+</div>
 
 <%= link_to 'Edit', edit_problem_path(@problem) %> |
 <%= link_to 'Back', problems_path %>

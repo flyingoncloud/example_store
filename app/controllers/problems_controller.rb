@@ -20,6 +20,8 @@ class ProblemsController < ApplicationController
   # GET /problems/1.json
   def show
     Rails.logger.info("urls: #{@problem.image_urls}")
+
+
     # @problem.normalized_problem_text = normalized_html(@problem.problem_text)
     # @answers = @problem.answers
     # @images = @problem.images
@@ -78,9 +80,9 @@ class ProblemsController < ApplicationController
   # PATCH/PUT /problems/1.json
   def update
     # @problem.normalized_problem_text = normalized_html(@problem.problem_text)
-    images = build_problem_images()
-    Rails.logger.debug(">>>have new images: #{images.size}")
-    @problem.images = images if images.size > 0
+    image_ids = get_or_build_problem_images(@problem)
+
+    @problem.image_ids = image_ids
 
     @problem.answers = build_answers()
 
@@ -120,7 +122,7 @@ class ProblemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def problem_params
-      params.require(:problem).permit(:problem_text, :answers, :answers_count)
+      params.require(:problem).permit(:problem_text, :answers, :answers_count, :old_answer_index_id_maps, :deleted_old_answer_ids)
     end
 
     def problems_layout
@@ -137,12 +139,83 @@ class ProblemsController < ApplicationController
     #   problem_text
     # end
 
+    def print(problem)
+      Rails.logger.debug("Problem:[problem_text = #{problem.problem_text}, image_ids = #{problem.image_ids}]")
+    end
 
-    def build_answers
-      answers = params['answers']
-      answer_indexes = @problem.answers_count
-      indexes = answer_indexes.split(" ")
-      Rails.logger.debug("answer_indexes: #{answer_indexes}" )
+    def get_or_build_answers(problem)
+      # all answer indexes, including existing and new answers
+      answer_indexes = params['problem']['answers_count']
+
+      deleted_answer_ids = params['problem']['deleted_answer_id']
+      Rails.logger.debug("Deleted answers: #{deleted_answer_ids}")
+
+      if answer_indexes && answer_indexes.strip().length > 0
+        indexes = answer_indexes.split(" ")
+        Rails.logger.debug("answer_indexes: #{answer_indexes}" )
+      end
+
+
+      problem_answers = []
+      if indexes
+        indexes.each do |index|
+          @answer = Answer.new()
+          answer_text = params['answers_' + index]
+          @answer.answer_text = answer_text
+          image_ids = build_answer_images(index);
+          @answer.image_ids = image_ids.join(",") if image_ids.size > 0;
+
+          problem_answers.push(@answer)
+          Rails.logger.debug(">>>answer: #{answer_text}, #{image_ids.join(",")}")
+        end
+      end
+      problem_answers
+    end
+
+    def update_or_delete_old_answers
+      old_answers = []
+      # old answers
+      old_answer_index_id_maps = params['problem']['old_answer_index_id_maps']
+
+      if old_answer_index_id_maps && old_answer_index_id_maps.strip().length > 0
+        old_answer_id_maps = old_answer_index_id_maps.scan(/(\d+):(\d+)/).map{ |key, value| [key, value]}
+        Rails.logger.debug("old_answer_id_maps: #{old_answer_id_maps}" )
+        old_answer_id_maps.each do |index, value|
+          answer = Answer.find(value.to_i)
+
+          Rails.logger.debug("Before answer[#{value}]: #{answer.answer_text}, #{answer.image_ids}")
+          answer_text = params['answers_' + index]
+          answer.answer_text = answer_text
+
+          image_ids = build_answer_images(index);
+          answer.image_ids = image_ids if image_ids && image_ids.size > 0
+          answer.save
+
+          Rails.logger.debug("After answer[#{value}]: #{answer.answer_text}, #{answer.image_ids}")
+          old_answers.push(answer)
+        end
+      end
+
+      deleted_answer_ids = params['problem']['deleted_old_answer_ids']
+      # TODO: delete corresponding image and image files
+      if deleted_answer_ids && deleted_answer_ids.strip().length > 0
+        deleted_answer_ids.strip().split(" ").each do |deleted_answer_id|
+          Rails.logger.debug("deleted old answer: #{deleted_answer_id}" )
+          answer = Answer.find(deleted_answer_id.to_i)
+          answer.destroy
+        end
+      end
+
+      old_answers
+    end
+
+    def build_new_answers
+      # new answers
+      answer_indexes = params['problem']['answers_count']
+      if answer_indexes && answer_indexes.strip().length > 0
+        indexes = answer_indexes.split(" ")
+        Rails.logger.debug("answer_indexes: #{answer_indexes}" )
+      end
 
 
       problem_answers = []
@@ -158,6 +231,53 @@ class ProblemsController < ApplicationController
         end
       end
       problem_answers
+    end
+
+    def build_answers
+      # new answers
+      answers = []
+      answers.concat(build_new_answers())
+      Rails.logger.debug("Got new answers: #{answers.size}")
+
+      answers.concat(update_or_delete_old_answers())
+      Rails.logger.debug("After adding old answers, having: #{answers.size}")
+
+      answers
+    end
+
+    def get_or_build_problem_images(problem)
+      uploaded_images = params['problem']['image_url']
+
+      Rails.logger.debug(">>>>uploaded_problem_images: #{uploaded_images}")
+      # it is array as supporting multiple uploading
+      images = []
+
+      if uploaded_images
+        # uploaded new image files, and delete old image records
+        uploaded_images.each do |uploaded_image|
+          image = Image.save(uploaded_image)
+          images.push(image.id) if image
+        end
+
+        existing_images = problem.find_images()
+        if existing_images
+          existing_images.each do |image|
+            image.destroy
+            Rails.logger.debug("Delete existing image: #{image.id}, #{image.image_url}")
+          end
+        end
+      end
+
+      image_ids = problem.image_ids
+
+      Rails.logger.debug("Find existing images: #{image_ids}")
+
+      if images
+        image_ids = images.join(",")
+        Rails.logger.debug("Build new images: #{image_ids}")
+      end
+
+      image_ids
     end
 
     def build_problem_images

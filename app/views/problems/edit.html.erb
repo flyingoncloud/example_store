@@ -24,14 +24,22 @@
   <% if @problem.answers %>
   <strong>Answers:</strong>
   <% index = 1 %>
+  <% answers_count = " " %>
+  <% old_answer_index_id_maps = " " %>
+  <% old_answer_indexes = " " %>
   <% @problem.answers.each do |answer| %>
+  <% answers_count = answers_count + index.to_s + " " %>
   <div class="choiceForm">
       <%= label_tag "Answer_" + index.to_s + ":" %>
       <%= text_area_tag "answers_" + index.to_s, answer.answer_text, rows: 5, style: "width:90%", id: "answers_text_" + index.to_s %>
       <%= link_to "X", "#", :onclick => "removeChoice($(this)) && doPreview()", :class => "remove-choice", :id => "X_" + index.to_s %>
       <!-- <%= link_to "X", "", :onclick => "removeChoice($(this)) && doPreview()", :class => "remove-choice", :id => "X_" + index.to_s %> -->
       <%= label_tag "Answer_" + index.to_s + "_Images:" %>
-      <%= file_field_tag  "answer_image_url_" + index.to_s, :id => "uploaded_answer_images_" + index.to_s, accept: 'image/png,image/jpeg', :multiple => true%>
+      <%= file_field_tag  "answer_image_url_" + index.to_s + "[]", :id => "uploaded_answer_images_" + index.to_s, accept: 'image/png,image/jpeg', :multiple => true%>
+
+      <% old_answer_index_id_maps = old_answer_index_id_maps + " " + index.to_s + ":" + answer.id.to_s + " " %>
+
+      <% old_answer_indexes = old_answer_indexes + " " + index.to_s  + " " %>
 
       <% index = index + 1 %>
   </div>
@@ -39,6 +47,18 @@
   <% end %>
 
   </div>
+  <!-- answers_count just records the new answers -->
+  <%= f.hidden_field  :answers_count, :id => "answers_count", :value => " " %>
+  <!-- next_index tracks the next answer index, calculating the old answers.
+      if there is no old answers, starting from 1.  Otherwise, starting from old_answer_sizes + 1.-->
+  <%= f.hidden_field  :next_index, :id => "next_index", :value => index %>
+  <!-- old_answer_index_id_maps tracks the old answers, and be used to identify which old answer
+    has been deleted -->
+  <%= f.hidden_field  :old_answer_index_id_maps, :id => "old_answer_index_id_maps", :value => old_answer_index_id_maps %>
+
+  <%= f.hidden_field  :old_answer_indexes, :id => "old_answer_indexes", :value => old_answer_indexes %>
+
+  <%= f.hidden_field  :deleted_old_answer_ids, :id => "deleted_old_answer_ids", :value => " " %>
 
   <a href="javascript:;" id="addNewAnswer">Add New Answer</a>
 
@@ -158,25 +178,23 @@
      <div class="large-4 columns">
        <br/>
        <div id="answer_image_placeholder" >
-         <div id="image_urls">
-           <% if @problem.answers %>
-           <strong>Answers:</strong>
-           <% index = 1 %>
-           <% @problem.answers.each do |answer| %>
-               <% if answer.image_urls && answer.image_urls.size > 0 %>
-                 <%= label_tag 'Answer_' + index.to_s + '_Images:' %>
-                 <ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing>'
-                 <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
-                 <% answer.image_urls.each do |image_url| %>
-                   <% answer_image_id = "answer_" + index.to_s + "_images"; %>
-                   <%= image_tag(image_url, id: answer_image_id, size: image_size) %>
-                 <% end %>
-               <% end %>
-               </ul>
-               <% index = index + 1 %>
-           <% end %>
-           <% end %>
-         </div>
+         <% if @problem.answers %>
+         <strong>Answers:</strong>
+         <% index = 1 %>
+         <% @problem.answers.each do |answer| %>
+              <%= label_tag 'Answer_' + index.to_s + '_Images:' %>
+              <% answer_image_id = "answer_" + index.to_s + "_images" %>
+              <ul id= <%= answer_image_id %> class="clearing-thumbs" data-clearing>
+              <% if answer.image_urls && answer.image_urls.size > 0 %>
+                <% image_size = (300/answer.image_urls.size).to_s + "x" + (200/answer.image_urls.size).to_s %>
+                <% answer.image_urls.each do |image_url| %>
+                   <%= image_tag(image_url, size: image_size) %>
+                <% end %>
+              <% end %>
+              </ul>
+            <% index = index + 1 %>
+         <% end %>
+         <% end %>
        </div>
        <br/>
      </div>
@@ -184,6 +202,423 @@
    </div>
 </div>
 
+<div  id="debug_info" >
+</div>
+
 <div style="display: none;" id="new_answer_form">
     <%= render partial: "problem_answer", locals: {index: $myvar } %>
 </div>
+
+
+
+<script type="text/javascript">
+jQuery.expr[':'].regex = function(elem, index, match) {
+    var matchParams = match[3].split(','),
+        validLabels = /^(data|css):/,
+        attr = {
+            method: matchParams[0].match(validLabels) ?
+                        matchParams[0].split(':')[0] : 'attr',
+            property: matchParams.shift().replace(validLabels,'')
+        },
+        regexFlags = 'ig',
+        regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+    return regex.test(jQuery(elem)[attr.method](attr.property));
+}
+
+//预览函数
+function doPreview()
+{
+      var fdsa = document.getElementById("inputText").value;
+      var asdf = "";
+      for (var i = 0; i < fdsa.length; i++)
+      {
+        switch(fdsa.charCodeAt(i))
+        {
+        case 10:
+          asdf += "<br />";
+          break;
+        case 13:
+          asdf += "<br />";
+          break;
+        case 60:
+          asdf += "&lt;";
+          break;
+        case 62:
+          asdf += "&gt;";
+          break;
+        default:
+          asdf += fdsa.charAt(i);
+        }
+      }
+
+      // var answers = document.getElementsByName("answers[]");
+      var answers = $(':regex(id, ^answers_text_[0-9]+)')
+      // alert("found answers:" + answers.length)
+      if (answers.length > 0) {
+        asdf += "<br />";
+        asdf += "Answers:<br />";
+      }
+      for (var index = 0; index < answers.length; index++) {
+        var answer = answers[index].value
+        // alert("myAnswer:" + answer)
+        for (var i = 0; i < answer.length; i++)
+        {
+          switch(answer.charCodeAt(i))
+          {
+          case 10:
+            asdf += "<br />";
+            break;
+          case 13:
+            asdf += "<br />";
+            break;
+          case 60:
+            asdf += "&lt;";
+            break;
+          case 62:
+            asdf += "&gt;";
+            break;
+          default:
+            asdf += answer.charAt(i);
+          }
+        }
+      }
+
+
+      document.getElementById('output').innerHTML = asdf;
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,document.getElementById("output")], function () {
+
+       });
+
+};
+
+window.onload = doPreview;
+inputText.onkeyup = doPreview;
+
+function findButtonbyTextContent(text) {
+  var buttons = document.querySelectorAll('button');
+  for (var i=0, l=buttons.length; i<l; i++) {
+    if (buttons[i].firstChild.nodeValue == text)
+      return buttons[i];
+  }
+}
+
+//预览切换
+function ylqh()
+{
+  // var buttonName = document.getElementById("ztyl").value;
+
+  var button = findButtonbyTextContent("暂停预览")
+  if (button == null) {
+    button = findButtonbyTextContent("继续预览")
+  }
+  var buttonName = button.firstChild.nodeValue
+  if (buttonName == "暂停预览")
+  {
+    inputText.onkeyup ="";
+    button.firstChild.nodeValue = "继续预览"
+
+  }
+  else
+  {
+    inputText.onkeyup = doPreview;
+    button.firstChild.nodeValue = "暂停预览";
+    doPreview()
+  }
+}
+
+//清空输入
+function clearinputText()
+{
+  document.getElementById("inputText").value="";
+  doPreview();
+
+}
+
+
+//光标处插入文本函数
+function insertAtCursor(myField, myValue) {
+//IE support
+if (document.selection) {
+myField.focus();
+sel = document.selection.createRange();
+sel.text = myValue;
+sel.select();
+}
+//MOZILLA/NETSCAPE support
+else if (myField.selectionStart || myField.selectionStart == '0') {
+var startPos = myField.selectionStart;
+var endPos = myField.selectionEnd;
+// save scrollTop before insert
+var restoreTop = myField.scrollTop;
+myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+if (restoreTop > 0) {
+myField.scrollTop = restoreTop;
+}
+myField.focus();
+myField.selectionStart = startPos + myValue.length;
+myField.selectionEnd = startPos + myValue.length;
+} else {
+myField.value += myValue;
+myField.focus();
+}
+}
+
+//控制光标
+//获取光标位置
+//单行文本框
+function getPositionForInput(ctrl){
+var CaretPos = 0;
+if (document.selection) { // IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+Sel.moveStart('character', -ctrl.value.length);
+CaretPos = Sel.text.length;
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//多行文本框
+function getPositionForTextArea(ctrl) {
+var CaretPos = 0;
+if(document.selection) {// IE Support
+ctrl.focus();
+var Sel = document.selection.createRange();
+var Sel2 = Sel.duplicate();
+Sel2.moveToElementText(ctrl);
+var CaretPos = -1;
+while(Sel2.inRange(Sel)){
+Sel2.moveStart('character');
+CaretPos++;
+}
+}else if(ctrl.selectionStart || ctrl.selectionStart == '0'){// Firefox support
+CaretPos = ctrl.selectionStart;
+}
+return (CaretPos);
+}
+//设置光标位置函数
+function setCursorPosition(ctrl, pos){
+if(ctrl.setSelectionRange){
+ctrl.focus();
+ctrl.setSelectionRange(pos,pos);
+}
+else if (ctrl.createTextRange) {
+var range = ctrl.createTextRange();
+range.collapse(true);
+range.moveEnd('character', pos);
+range.moveStart('character', pos);
+range.select();
+}
+}
+//光标后退n步（多行文本框）
+function BackForTextArea(targetId,n){
+setCursorPosition(
+document.getElementById(targetId),
+getPositionForTextArea(document.getElementById(targetId)) - n
+);
+}
+
+//在inputText插入文本
+function cha(codes) {
+insertAtCursor(document.getElementById('inputText'),codes);
+inputText.onkeyup()
+}
+//在inputText插入文本并后退n步
+function chaback(codes,n) {
+insertAtCursor(document.getElementById('inputText'),codes);
+BackForTextArea('inputText',n);
+inputText.onkeyup()
+}
+
+function showImages(input) {
+  var file, i, len, reader, ref;
+  if (input.files && input.files[0]) {
+    ref = input.files;
+    $('#photos_clearing').html('<strong> Images for Problem</strong> :')
+    for (i = 0, len = ref.length; i < len; i++) {
+      file = ref[i];
+      reader = new FileReader();
+      reader.onload = function (e) {
+        var image_html;
+        image_html = '<br> <a class="th" href="' + e.target.result + '"><img width="50%" src="' + e.target.result + '"></a>';
+        // alert("image_html:" + image_html)
+        $('#photos_clearing').append(image_html);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+function showAnswerImages(input, index) {
+
+  var file, i, len, reader, ref;
+  // var index =  event.data.value
+  var answer_image_id = "answer_" + index + "_images";
+  // alert("Clicked: " + answer_image_id)
+  if (input.files && input.files[0]) {
+    ref = input.files;
+    // $('#show_answer_image').html('')
+    $("#"+answer_image_id).html('<strong> Images for Answer ' + index + '</strong> :<br>')
+    for (i = 0, len = ref.length; i < len; i++) {
+      file = ref[i];
+      $('#debug_info').append( "Clicked "+ index +  ", name:" + answer_image_id + ", uploaded image:" +  file  + "<br>");
+
+      reader = new FileReader();
+      reader.onload = function (e) {
+        var image_html;
+        image_html = '<a class="th" href="' + e.target.result + '"><img width="50%" src="' + e.target.result + '"></a>';
+        // alert("image_html:" + image_html)
+        // $('#debug_info').append(image_html)
+        $("#"+answer_image_id).append(image_html);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+
+$("#uploaded_images").on('change', function (e) {
+  showImages(this)
+  // alert("images:" + images)
+});
+
+function removeChoice(element) {
+  var index = element.attr("id").substring(2)
+  // alert("index removed:" + index)
+  removeAnswerIndex(index)
+  return element.parent().remove();
+};
+
+
+$("#addNewAnswer").on("click", function(e) {
+  var index = $('#next_index').val();
+  // alert("curent index:" + index)
+  $('#next_index').val(parseInt(index)+ 1);
+  // alert("curent index:" + $('#next_index').val())
+  var value = $("#new_answer_form").html();
+
+  value = value.replace(/myvar_/g, index)
+
+  // alert("value:" + value)
+
+
+  appendAnswerIndex(index);
+  // alert("index: " + index)
+  $("#problem_answers").append(value)
+  $("#answers_text_" + index).keyup(doPreview);
+
+  $("#uploaded_answer_images_" + index).on('change', {value: index}, function (e) {
+    var msgs = [
+      "<br> button = " + $( this ).index(),
+      "event.data.value = " + e.data.value,
+      "i = " + index
+    ];
+
+    $('#debug_info').append( msgs.join( ", " ) + "<br>" );
+
+    showAnswerImages(this, e.data.value)
+  });
+
+  var answer_image_id = "answer_" + index + "_images";
+
+  var answer_html = '<ul id=' + answer_image_id + ' class="clearing-thumbs" data-clearing> </ul>';
+  $('#debug_info').append(answer_html)
+  $("#answer_image_placeholder").append(answer_html);
+});
+
+function appendAnswerIndex(index) {
+  var answers_indexes = $("#answers_count").val()
+  // var old_answers_size = $("#old_answers_size").val()
+  // answers_count just records new answer
+  answers_indexes = answers_indexes + " " + index + " "
+  //
+  // if (index == parseInt(old_answers_size) + 1) {
+  //   answers_indexes = " " + index + " "
+  // } else {
+  //   answers_indexes = answers_indexes + " " + index + " "
+  // }
+
+  $("#answers_count").val(answers_indexes)
+
+  // alert("indexes:" + answers_indexes)
+}
+
+function removeAnswerIndex(index) {
+  // removing the index from answers_count, which means the answer has been deleted
+  // and it will not been inserted into database
+  // new answers
+  var answers_indexes = $("#answers_count").val()
+  answers_indexes = answers_indexes.replace(" " + index + " ", " ")
+  $("#answers_count").val(answers_indexes)
+
+  // removed the existing answer id from hidden field, which means the old answer
+  // has been deleted
+  //TODO: how to get the mapping between index and answer_id
+  var old_answer_index_id_maps = $("#old_answer_index_id_maps").val()
+  if (old_answer_index_id_maps != null) {
+    var old_answer_id_array = old_answer_index_id_maps.trim().split(" ")
+    // alert("old_answer_index_id_maps:" + old_answer_index_id_maps + ", " + old_answer_id_array + ", trying to remove " + index)
+    $.each(old_answer_id_array, function(i, value) {
+      var old_answer_id_map = value.split(":");
+      var answer_index = old_answer_id_map[0].trim();
+      var old_answer_id = old_answer_id_map[1];
+      // alert("Found [index, value]: " + i + "," + value + ", map:" + answer_index + "->" + old_answer_id)
+      // if (answer_index.length > 0) {
+      //   alert("answer_index:answer_id -> " + parseInt(answer_index) + ", " + parseInt(old_answer_id))
+      // }
+      if (answer_index.length > 0 && parseInt(index) === parseInt(answer_index)) {
+        // alert("Removed old answer:" + old_answer_id)
+        old_answer_index_id_maps = old_answer_index_id_maps.replace(" " + value + " ", " ")
+        $("#old_answer_index_id_maps").val(old_answer_index_id_maps)
+
+        var deleted_old_answer_ids = $("#deleted_old_answer_ids").val()
+        deleted_old_answer_ids = deleted_old_answer_ids + " " + old_answer_id + " "
+        $("#deleted_old_answer_ids").val(deleted_old_answer_index_id_maps)
+        return false;
+      }
+
+    });
+
+  }
+
+
+  var next_index = $('#next_index').val();
+  if (index == parseInt(next_index) -1) {
+    $('#next_index').val(parseInt(next_index) - 1);
+  }
+
+  var answer_image_id = "answer_" + index + "_images";
+  // alert("remove: " + answer_image_id)
+  $("#" + answer_image_id).remove()
+
+}
+
+
+function setAnswerOnchange() {
+  var answers_indexes = $.trim($("#old_answer_indexes").val());
+  if (answers_indexes) {
+    var indexes = answers_indexes.split(" ")
+    $.each(indexes, function(index, value ) {
+      $("#answers_text_" + value).keyup(doPreview);
+
+      var answer_image_id = "uploaded_answer_images_" + value;
+      // alert("change: " + answer_image_id)
+      $("#" + answer_image_id).on('change', {value: value}, function (e) {
+        var msgs = [
+          "<br> button = " + $( this ).index(),
+          "event.data.value = " + e.data.value,
+          "i = " + index
+        ];
+        $('#debug_info').append( msgs.join( ", " ) + "<br>" );
+
+        showAnswerImages(this, e.data.value)
+      });
+    });
+  }
+
+}
+
+$(document).on("ready", function() {
+  setAnswerOnchange();
+});
+
+</script>

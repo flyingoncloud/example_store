@@ -1,16 +1,33 @@
 class Problem < ApplicationRecord
   # has_many :images
   has_many :answers
-  attr_accessor  :answers_count, :images
+  attr_accessor  :answers_count, :images, :old_answer_index_id_maps, :deleted_old_answer_ids
   validates :problem_text, presence: true
 
   def self.latest
     Problem.order(:updated_at).last
   end
 
+  def normalized_ids (image_ids)
+    normalized_ids = image_ids
+    if normalized_ids and normalized_ids.length > 0
+      if normalized_ids.include?'[' then
+        from = normalized_ids.index("[");
+        to = normalized_ids.index("]");
+        Rails.logger.debug("***Answer.normalized_ids: #{from}, #{to}")
+
+        normalized_ids = normalized_ids[from + 1, to - 1]
+        Rails.logger.debug("***Answer.image_ids: #{normalized_ids}")
+      end
+    end
+    normalized_ids
+
+  end
+
   def find_images
-    if image_ids then
-      @images = Image.find(image_ids.split(",").map{ |id| id.to_i })  #where("id in ?", image_ids)
+    if image_ids and image_ids.length > 0 then
+      ids = normalized_ids(image_ids)
+      @images = Image.find(ids.split(",").map{ |id| id.to_i })  #where("id in ?", image_ids)
       Rails.logger.debug("Found images: #{@images}")
     end
 
