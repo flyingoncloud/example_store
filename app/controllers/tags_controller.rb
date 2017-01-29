@@ -18,7 +18,7 @@ class TagsController < ApplicationController
     Rails.logger.info("Found children:  #{@all_second_children.length}")
 
     respond_to do |format|
-      format.html { redirect_to knowledge_points_url, notice: 'Knowledge points were successfully created.' }
+      format.html { redirect_to tags_url, notice: 'Tags were successfully created.' }
       format.json { render json: @all_second_children }
     end
 
@@ -32,8 +32,6 @@ class TagsController < ApplicationController
   # GET /tags/new
   def new
     @tag = Tag.new
-    @all_children = Tag.all_children(-1)
-    @all_second_children = []
 
   end
 
@@ -66,8 +64,17 @@ class TagsController < ApplicationController
   # PATCH/PUT /tags/1
   # PATCH/PUT /tags/1.json
   def update
+    Rails.logger.debug("updating...")
+    update_sucessful = false
+    begin
+      update_sucessful = @tag.update(tag_params)
+    rescue Exception => e
+      Rails.logger.error("****Cannot update tag.", e)
+    end
+
+
     respond_to do |format|
-      if @tag.update(tag_params)
+      if update_sucessful
         format.html { redirect_to @tag, notice: 'Tag was successfully updated.' }
         format.json { render :show, status: :ok, location: @tag }
       else
@@ -84,12 +91,12 @@ class TagsController < ApplicationController
     if children.empty?
       @tag.destroy
       respond_to do |format|
-        format.html { redirect_to knowledge_points_url, notice: 'Tag was successfully destroyed.' }
+        format.html { redirect_to tags_url, notice: 'Tag was successfully destroyed.' }
         format.json { head :no_content }
       end
     else
       respond_to do |format|
-        format.html { redirect_to knowledge_points_url, notice: 'Tag has children. Cannot be destroyed.' }
+        format.html { redirect_to tags_url, notice: 'Tag has children. Cannot be destroyed.' }
         format.json { head :no_content }
       end
     end
@@ -103,7 +110,7 @@ class TagsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def tag_params
-      params.require(:tag).permit(:tag_indexes, :parent_id, :parent_level)
+      params.require(:tag).permit(:name, :alias, :memo, :level, :tag_indexes, :parent_id, :parent_level)
     end
 
     def print_tag (tag)

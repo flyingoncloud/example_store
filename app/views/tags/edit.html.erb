@@ -1,28 +1,49 @@
 <h1>Editing Tag</h1>
 
-<!-- <%= render 'form', problem: @problem %> -->
-
-<div class="ad_footerbanner" id="ad_footerbanner3">
-<style type="text/css">
-#inputWrap{float:left;width:38%}
-#inputText{background:#ffffef;width:100%}
-#outputWrap{float:right;width:61%}
-#output{background:#ffffef;text-align:left;padding:6px;border:solid 1px #ccc;-moz-border-radius:5px;border-radius:5px}
-.anniu{font-family:"Tahoma"}
-</style>
-
-<div id="inputWrap">
-<!-- <textarea id="inputText" rows="15">
-
-</textarea> -->
 
 <%= form_for @tag, url: {action: "update"} do |f| %>
-   <%= f.text_field :name  %>
-   <%= f.text_field :parent_name, disabled: true%>
-   <%= f.text_field :memo %>
-   <%= f.submit "Update" %>
+  <table style="width:100%">
+     <tr>
+       <td><%= f.label "Name:"%></td>
+       <td><%= f.text_field :name %></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td><%= f.label "Tag Math Description:"%></td>
+       <td><%= f.text_area :alias, rows: 5, style: "width:90%", id: "tag_alias_text_1" %></td>
+       <td><div id="tag_alias_output_1"> </div></td>
+     </tr>
+     <tr>
+       <td><%= f.label "Memo:"%></td>
+       <td><%= f.text_field :memo %></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td></td>
+       <% if (@tag.parent_id) %>
+       <% parent_id_value = @tag.parent_id %>
+       <% else %>
+       <% parent_id_value = 0 %>
+       <% end %>
+       <td><%= f.hidden_field :parent_id, :value => parent_id_value %></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td></td>
+       <td><%= f.hidden_field :level %></td>
+       <td></td>
+     </tr>
+  </table>
+  <%= f.submit "Update" %>
 <% end %>
 
 
 <%= link_to 'Show', @tag %> |
 <%= link_to 'Back', tags_path %>
+
+<script>
+  $(document).on("load", function() {
+    $("tag_alias_text_1").keyup(doPreview);
+  });
+
+</script>

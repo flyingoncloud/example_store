@@ -15,7 +15,7 @@
     height: 150px;
   }
   .list_name {
-    width: 10%;
+    width: 15%;
 
     dl {
       margin: 0;
@@ -30,8 +30,23 @@
     }
   }
 
+  .list_memo {
+    width: 15%;
+
+    dl {
+      margin: 0;
+    }
+    dt {
+      color: #244;
+      font-weight: bold;
+      font-size: larger;
+    }
+    dd {
+      margin: 0;
+    }
+  }
   .list_description {
-    width: 50%;
+    width: 40%;
 
     dl {
       margin: 0;
