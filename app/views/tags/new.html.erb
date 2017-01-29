@@ -1,0 +1,42 @@
+<h1>New Tag</h1>
+<div>
+
+</div>
+
+<%= form_for @tag, url: {action: "create"} do |f| %>
+  <%= hidden_field_tag "current_action", :id => "current_action" %>
+  <%= f.hidden_field  :tag_indexes, :id => "tag_indexes", :value => " "%>
+
+
+  <div id="tags">
+      <!-- <%= render 'tag_content' %> -->
+  </div>
+
+  <a href="javascript:;" id="addNewTag">Add New Tag</a>
+
+
+  <%= f.submit "Save", id: "save_tag" %>
+
+<% end %>
+
+
+<div id="outputWrap"/>
+
+
+
+<div id="output">
+  <textarea id="outputText" rows="15">
+  </textarea>
+</div>
+
+<%= link_to 'Back', tags_path %>
+
+<div style="display: none;" id="new_tag_content_form">
+    <%= render partial: "tag_content", locals: {index: $myvar } %>
+</div>
+
+
+<script>
+
+
+</script>

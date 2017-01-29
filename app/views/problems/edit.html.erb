@@ -29,7 +29,7 @@
   <% old_answer_indexes = " " %>
   <% @problem.answers.each do |answer| %>
   <% answers_count = answers_count + index.to_s + " " %>
-  <div class="choiceForm">
+  <div class="existingAnswerForm">
       <%= label_tag "Answer_" + index.to_s + ":" %>
       <%= text_area_tag "answers_" + index.to_s, answer.answer_text, rows: 5, style: "width:90%", id: "answers_text_" + index.to_s %>
       <%= link_to "X", "#", :onclick => "removeChoice($(this)) && doPreview()", :class => "remove-choice", :id => "X_" + index.to_s %>

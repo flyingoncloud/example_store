@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Tags</h1>
+
+<table>
+  <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
+    <td class="list_name"> Name  </td>
+    <td class="list_description"> Math Description </td>
+    <td class="list_normal"> Parent </td>
+    <td class="list_normal"> Level </td>
+    <td class="list_normal"> Memo </td>
+    <td class="list_description"> Action </td>
+  </tr>
+<% @tags.each do |tag|%>
+  <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
+    <td class="list_name">
+        <%= tag.name %>
+    </td>
+    <td class="list_description">
+       <%= tag.alias %>
+    </td>
+    <td class="list_normal">
+         <%= tag.parent_id %>
+    </td>
+    <td class="list_normal">
+         <%= tag.level %>
+    </td>
+    <td class="list_normal">
+         <%= tag.memo %>
+    </td>
+
+    <td class="list_actions">
+      <%= link_to 'Show', tag%><br/>
+      <%= link_to 'Edit', edit_tag_path(tag) %><br/>
+      <%= link_to 'Add Children', add_children_tag_path(tag) %><br/>
+      <%= link_to 'Destroy', tag, method: :delete,
+                   data: { confirm: 'Deleted?' } %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+
+<%= link_to 'New Tag', new_tag_path %>

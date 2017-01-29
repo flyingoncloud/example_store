@@ -13,5 +13,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :tags do
+    member do
+      get :all_children
+      post :add_children
+    end
+  end
+
   root to: 'problems#index'
 end

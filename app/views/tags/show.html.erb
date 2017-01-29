@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>name:</strong>
+  <%= @tag.name %>
+</p>
+
+<p>
+  <strong>parent:</strong>
+  <%= @tag.parent_name %>
+</p>
+
+<p>
+  <strong>Level:</strong>
+  <%= @tag.level %>
+</p>
+
+
+<%= link_to 'Edit', edit_tag_path(@tag) %> |
+<%= link_to 'Back', tags_path %>
+
+
+<script language="javascript" type="text/javascript">setTimeout("location.reload();",20000);</script>

@@ -1,0 +1,28 @@
+<h1>Editing Tag</h1>
+
+<!-- <%= render 'form', problem: @problem %> -->
+
+<div class="ad_footerbanner" id="ad_footerbanner3">
+<style type="text/css">
+#inputWrap{float:left;width:38%}
+#inputText{background:#ffffef;width:100%}
+#outputWrap{float:right;width:61%}
+#output{background:#ffffef;text-align:left;padding:6px;border:solid 1px #ccc;-moz-border-radius:5px;border-radius:5px}
+.anniu{font-family:"Tahoma"}
+</style>
+
+<div id="inputWrap">
+<!-- <textarea id="inputText" rows="15">
+
+</textarea> -->
+
+<%= form_for @tag, url: {action: "update"} do |f| %>
+   <%= f.text_field :name  %>
+   <%= f.text_field :parent_name, disabled: true%>
+   <%= f.text_field :memo %>
+   <%= f.submit "Update" %>
+<% end %>
+
+
+<%= link_to 'Show', @tag %> |
+<%= link_to 'Back', tags_path %>
