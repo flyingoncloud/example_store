@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170121073203) do
+ActiveRecord::Schema.define(version: 20170130201943) do
 
   create_table "answers", force: :cascade do |t|
     t.text     "answer_text"
@@ -86,13 +86,32 @@ ActiveRecord::Schema.define(version: 20170121073203) do
   create_table "tags", force: :cascade do |t|
     t.string   "name"
     t.text     "alias"
-    t.integer  "level",           default: 0
-    t.text     "memo",            default: ""
-    t.integer  "parent_id",       null: true
-    t.string   "parent_name",     null: true
-    t.string   "is_leaf",         default: "N"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.integer  "level",       default: 0
+    t.text     "memo",        default: ""
+    t.integer  "parent_id"
+    t.string   "parent_name"
+    t.string   "is_leaf",     default: "N"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.integer  "role"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
 end

@@ -21,5 +21,8 @@ Rails.application.routes.draw do
     end
   end
 
-  root to: 'problems#index'
+  devise_for :users
+  resources :users
+
+  root to: 'visitors#index'
 end

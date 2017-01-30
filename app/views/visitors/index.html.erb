@@ -1,0 +1,14 @@
+<h3>Welcome</h3>
+<% if user_signed_in? %>
+  <% if current_user.admin? %>
+    <h3>Admin</h3>
+    <p><%= link_to 'User count:', users_path %> <%= User.count %></p>
+  <% else %>
+    <h3>You've signed up. Enjoy your math playground.</h3>
+  <% end %>
+<% else %>
+  <h3>Sign up and play math.</h3>
+  <%= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary btn-large' %>
+<% end %>
+<!-- <h3>Welcome</h3>
+<p><%= link_to 'Users:', users_path %> <%= User.count %> registered</p> -->
