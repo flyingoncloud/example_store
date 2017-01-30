@@ -16,7 +16,8 @@ Rails.application.routes.draw do
   resources :tags do
     member do
       get :all_children
-      post :add_children
+      post :new_children
+      post :create_children
     end
   end
 

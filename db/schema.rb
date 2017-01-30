@@ -86,13 +86,13 @@ ActiveRecord::Schema.define(version: 20170121073203) do
   create_table "tags", force: :cascade do |t|
     t.string   "name"
     t.text     "alias"
-    t.integer  "parent_id",   default: 0
-    t.string   "parent_name", default: ""
-    t.integer  "level",       default: 0
-    t.text     "memo",        default: ""
-    t.string   "is_leaf",     default: "N"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "level",           default: 0
+    t.text     "memo",            default: ""
+    t.integer  "parent_id",       null: true
+    t.string   "parent_name",     null: true
+    t.string   "is_leaf",         default: "N"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
 end

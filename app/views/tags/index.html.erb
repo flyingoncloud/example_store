@@ -20,7 +20,7 @@
        <%= tag.alias %>
     </td>
     <td class="list_normal">
-       <%= tag.parent_id %>
+      <%= tag.parent_name %>
     </td>
     <td class="list_normal">
          <%= tag.level %>
@@ -32,7 +32,7 @@
     <td class="list_actions">
       <%= link_to 'Show', tag%><br/>
       <%= link_to 'Edit', edit_tag_path(tag) %><br/>
-      <%= link_to 'Add Children', add_children_tag_path(tag) %><br/>
+      <%= link_to 'Add Children', new_children_tag_path(tag.id), :method => :post %><br/>
       <%= link_to 'Destroy', tag, method: :delete,
                    data: { confirm: 'Deleted?' } %>
     </td>

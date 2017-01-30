@@ -51,12 +51,26 @@ class TagsController < ApplicationController
     end
   end
 
+  def create_children
 
-  def add_children
-    respond_to do |format|
-      format.html { redirect_to tags_url, notice: 'Tags were successfully created.' }
-      format.json { head :no_content }
-    end
+     parent_id = params["tag"]["parent_id"]
+     Rails.logger.debug("Parent tag: #{@parent_tag}")
+
+     create_tags(params)
+
+     respond_to do |format|
+       format.html { redirect_to tags_url, notice: 'Children tags were successfully created.' }
+       format.json { head :no_content }
+     end
+  end
+
+  def new_children
+     tag_id = params["id"]
+     @parent_tag = Tag.find(tag_id);
+     @tag = Tag.new()
+
+     Rails.logger.debug("Add children tags for #{tag_id}")
+
   end
 
 
@@ -110,7 +124,7 @@ class TagsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def tag_params
-      params.require(:tag).permit(:name, :alias, :memo, :level, :tag_indexes, :parent_id, :parent_level)
+      params.require(:tag).permit(:name, :alias, :memo, :level, :tag_indexes, :parent_id, :parent_name, :parent_level)
     end
 
     def print_tag (tag)
@@ -125,10 +139,31 @@ class TagsController < ApplicationController
 
     def create_tags(params)
       tag_indexes = params["tag"]["tag_indexes"]
-      parent_id = 0
-      parent_level = 0
-      parent_id = params["tag"]["parent_id"].to_i if params["tag"]["parent_id"]
-      parent_level = params["tag"]["parent_level"].to_i if params["tag"]["parent_level"]
+
+      if params["tag"]["parent_id"]
+        parent_id = params["tag"]["parent_id"].to_i
+      else
+        parent_id = -1
+      end
+
+      parent_name = params["tag"]["parent_name"]
+      Rails.logger.debug("parent_name: #{parent_name}")
+      if params["tag"]["parent_name"]
+        parent_name = params["tag"]["parent_name"]
+      else
+        parent_name = ""
+      end
+
+
+      Rails.logger.debug("parent_name: #{parent_name}")
+
+      if params["tag"]["parent_level"]
+        level = params["tag"]["parent_level"].to_i + 1
+      else
+        level = 0
+      end
+
+      Rails.logger.debug("Parent_id: #{parent_id}, level: #{level}")
 
       if tag_indexes.strip().length > 0
         indexes = tag_indexes.split(" ")
@@ -138,7 +173,11 @@ class TagsController < ApplicationController
           tag.name = params["tag_name_" + index].strip()
           tag.alias = params["tag_alias_text_" + index].strip()
           tag.parent_id = parent_id
-          tag.parent_level = parent_level
+          tag.parent_name = parent_name
+          tag.level = level
+
+
+          Rails.logger.debug("parent_name: #{parent_name}")
 
           print_tag(tag)
 

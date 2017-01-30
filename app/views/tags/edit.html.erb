@@ -23,9 +23,19 @@
        <% if (@tag.parent_id) %>
        <% parent_id_value = @tag.parent_id %>
        <% else %>
-       <% parent_id_value = 0 %>
+       <% parent_id_value = -1 %>
        <% end %>
        <td><%= f.hidden_field :parent_id, :value => parent_id_value %></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td></td>
+       <% if (@tag.parent_name) %>
+       <% parent_name_value = @tag.parent_name %>
+       <% else %>
+       <% parent_name_value = "" %>
+       <% end %>
+       <td><%= f.hidden_field :parent_name, :value => parent_name_value %></td>
        <td></td>
      </tr>
      <tr>
@@ -42,8 +52,8 @@
 <%= link_to 'Back', tags_path %>
 
 <script>
-  $(document).on("load", function() {
-    $("tag_alias_text_1").keyup(doPreview);
+  $(document).on("ready", function() {
+    $("#tag_alias_text_1").keyup(doPreview);
   });
 
 </script>

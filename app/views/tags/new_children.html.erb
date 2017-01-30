@@ -1,0 +1,52 @@
+<h1>Parent Tag</h1>
+<div class="tagContentField">
+  <p>
+    <strong>name:</strong>
+    <%= @parent_tag.name %>
+  </p>
+
+  <p>
+    <strong>Math Description:</strong>
+    <%= @parent_tag.alias %>
+  </p>
+
+  <p>
+    <strong>Level:</strong>
+    <%= @parent_tag.level %>
+  </p>
+</div>
+
+<br> <strong>Children Tags:</strong> <br>
+
+<%= form_for @tag, url: {action: "create_children"} do |f| %>
+  <%= f.hidden_field :tag_indexes, :id => "tag_indexes", :value => " "%>
+  <%= f.hidden_field :parent_id, :value => @parent_tag.id %></td>
+  <%= f.hidden_field :parent_level, :value => @parent_tag.level %></td>
+  <%= f.hidden_field :parent_name, :value => @parent_tag.name %></td>
+
+  <div id="tags">
+      <!-- <%= render 'tag_content' %> -->
+  </div>
+
+  <a href="javascript:;" id="addNewTag">Add New Tag</a>
+
+
+  <%= f.submit "Save", id: "save_tag" %>
+
+<% end %>
+
+
+<div id="outputWrap"/>
+
+
+
+<div id="output">
+  <textarea id="outputText" rows="15">
+  </textarea>
+</div>
+
+<%= link_to 'Back', tags_path %>
+
+<div style="display: none;" id="new_tag_content_form">
+    <%= render partial: "tag_content", locals: {index: $myvar } %>
+</div>
