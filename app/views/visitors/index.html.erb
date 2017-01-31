@@ -7,8 +7,8 @@
     <h3>You've signed up. Enjoy your math playground.</h3>
   <% end %>
 <% else %>
-  <h3>Sign up and play math.</h3>
-  <%= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary btn-large' %>
+  <h3>Sign in and play math.</h3>
+  <%= link_to 'Sign in', new_user_session_path, class: 'btn btn-primary btn-large' %>
 <% end %>
 <!-- <h3>Welcome</h3>
 <p><%= link_to 'Users:', users_path %> <%= User.count %> registered</p> -->

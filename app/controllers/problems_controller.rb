@@ -1,4 +1,5 @@
 class ProblemsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_problem, only: [:show, :edit, :update, :destroy]
   layout :problems_layout
 
