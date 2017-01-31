@@ -1,4 +1,5 @@
 class KnowledgePointsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_knowledge_point, only: [:show, :edit, :update, :destroy]
 
   # GET /knowledge_points
