@@ -83,6 +83,17 @@ class TagsController < ApplicationController
     update_sucessful = false
     begin
       update_sucessful = @tag.update(tag_params)
+      all_children = Tag.all_children(@tag.id)
+
+      Rails.logger.debug("Found child tags: #{all_children.size} ...")
+      all_children.each do |child|
+        if child.parent_name != @tag.name
+          child.parent_name = @tag.name
+          child.save
+          Rails.logger.debug("child tag #{child.id} updated...")
+        end
+      end
+
     rescue Exception => e
       Rails.logger.error("****Cannot update tag.", e)
     end
