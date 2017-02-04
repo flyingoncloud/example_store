@@ -17,7 +17,7 @@
         <%= tag.name %>
     </td>
     <td class="list_description">
-       <%= tag.alias %>
+       <%= tag.normalized_alias_text.html_safe %>
     </td>
     <td class="list_normal">
       <%= tag.parent_name %>

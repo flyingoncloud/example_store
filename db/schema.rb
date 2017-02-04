@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170130201943) do
+ActiveRecord::Schema.define(version: 20170204114139) do
 
   create_table "answers", force: :cascade do |t|
     t.text     "answer_text"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20170130201943) do
 
   create_table "tags", force: :cascade do |t|
     t.string   "name"
-    t.text     "alias"
+    t.text     "alias_text"
     t.integer  "level",       default: 0
     t.text     "memo",        default: ""
     t.integer  "parent_id"

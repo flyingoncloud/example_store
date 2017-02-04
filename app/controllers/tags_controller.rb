@@ -136,13 +136,13 @@ class TagsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def tag_params
-      params.require(:tag).permit(:name, :alias, :memo, :level, :tag_indexes, :parent_id, :parent_name, :parent_level)
+      params.require(:tag).permit(:name, :alias_text, :memo, :level, :tag_indexes, :parent_id, :parent_name, :parent_level)
     end
 
     def print_tag (tag)
       Rails.logger.info("*********")
       Rails.logger.info("name: #{tag.name}")
-      Rails.logger.info("alias: #{tag.alias}")
+      Rails.logger.info("alias: #{tag.alias_text}")
       Rails.logger.info("parent_id: #{tag.parent_id}")
       Rails.logger.info("parent_name: #{tag.parent_name}")
       Rails.logger.info("memo: #{tag.memo}")
@@ -183,7 +183,7 @@ class TagsController < ApplicationController
           index = index.strip()
           tag = Tag.new()
           tag.name = params["tag_name_" + index].strip()
-          tag.alias = params["tag_alias_text_" + index].strip()
+          tag.alias_text = params["tag_alias_text_" + index].strip()
           tag.parent_id = parent_id
           tag.parent_name = parent_name
           tag.level = level

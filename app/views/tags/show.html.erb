@@ -1,13 +1,22 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <strong>parent:</strong>
+  <%= @tag.parent_name %>
+</p>
+
+<p>
   <strong>name:</strong>
   <%= @tag.name %>
 </p>
 
 <p>
   <strong>Math Description:</strong>
-  <%= @tag.alias %>
+  <% if @tag.normalized_alias_text  %>
+  <%= @tag.normalized_alias_text.html_safe %>
+  <% else %>
+  <%= @tag.alias.html_safe %>
+  <% end %>
 </p>
 
 <p>

@@ -1,16 +1,15 @@
 <div class="tagContentForm">
   <strong> Tag_myvar_</strong>
-  <table style="width:100%">
-
+  <table style="width:100%; table-layout: fixed;">
      <tr>
-       <td><%= label_tag "Name:"%></td>
-       <td><%= text_field_tag "tag_name_myvar_" %></td>
+       <td width="15%"><%= label_tag "Name:"%></td>
+       <td ><%= text_field_tag "tag_name_myvar_" %></td>
        <td></td>
      </tr>
      <tr>
-       <td><%= label_tag "Tag Math Description:"%></td>
-       <td><%= text_area_tag "tag_alias_text_myvar_", nil, rows: 5, style: "width:90%", id: "tag_alias_text_myvar_"%></td>
-       <td><div id="tag_alias_output_myvar_"> </div></td>
+       <td width="10%"><%= label_tag "Tag Math Description:"%></td>
+       <td width="50%"><%= text_area_tag "tag_alias_text_myvar_", nil, rows: 10, style: "width:100%", id: "tag_alias_text_myvar_"%></td>
+       <td width="40%"><div id="tag_alias_output_myvar_"> </div></td>
      </tr>
   </table>
 

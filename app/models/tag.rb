@@ -14,7 +14,20 @@ class Tag < ApplicationRecord
     Tag.order(:updated_at).last
   end
 
+  def normalized_alias_text
+    normalized_alias_text = normalized_html(alias_text)
+  end
+
+
   private
 
-  
+  def normalized_html(alias_text)
+    charCodeMap = { 60.chr => "&lt;", 62.chr => "&gt;", 10.chr  => "<br/>", 13.chr => "<br/>"}  #, 60.chr => "&lt;", 62.chr => "&gt;"
+    charCodeMap.each do |key, value|
+      alias_text = alias_text.gsub(key, value)
+      # Rails.logger.debug("******: #{key}->#{value}, #{alias_text}")
+    end
+    alias_text
+  end
+
 end
