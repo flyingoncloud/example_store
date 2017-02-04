@@ -2,16 +2,27 @@
 
 
 <%= form_for @tag, url: {action: "update"} do |f| %>
-  <table style="width:100%">
+  <table style="width:100%; table-layout: fixed;">
+      <tr>
+        <td width="10%">Parent Name:</td>
+        <% if (@tag.parent_name) %>
+        <% parent_name_value = @tag.parent_name %>
+        <% else %>
+        <% parent_name_value = "" %>
+        <% end %>
+        <td><%= @tag.parent_name %></td>
+        <td><%= f.hidden_field :parent_name, :value => parent_name_value %></td>
+      </tr>
+
      <tr>
        <td><%= f.label "Name:"%></td>
        <td><%= f.text_field :name %></td>
        <td></td>
      </tr>
      <tr>
-       <td><%= f.label "Tag Math Description:"%></td>
-       <td><%= f.text_area :alias, rows: 5, style: "width:90%", id: "tag_alias_text_1" %></td>
-       <td><div id="tag_alias_output_1"> </div></td>
+       <td width="10%"><%= f.label "Tag Math Description:"%></td>
+       <td width="50%"><%= f.text_area :alias, :rows => 10, style: "width:100%", id: "tag_alias_text_1" %></td>
+       <td width="40%"><div id="tag_alias_output_1"> </div></td>
      </tr>
      <tr>
        <td><%= f.label "Memo:"%></td>
@@ -28,16 +39,7 @@
        <td><%= f.hidden_field :parent_id, :value => parent_id_value %></td>
        <td></td>
      </tr>
-     <tr>
-       <td></td>
-       <% if (@tag.parent_name) %>
-       <% parent_name_value = @tag.parent_name %>
-       <% else %>
-       <% parent_name_value = "" %>
-       <% end %>
-       <td><%= f.hidden_field :parent_name, :value => parent_name_value %></td>
-       <td></td>
-     </tr>
+
      <tr>
        <td></td>
        <td><%= f.hidden_field :level %></td>
